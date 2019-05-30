@@ -1,0 +1,33 @@
+{
+    "name": "somnambulist/mutagen-sync-it",
+    "description": "A CLI helper app for using mutagen with docker containers",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dave Redfern",
+            "email": "info@somnambulist.tech"
+        }
+    ],
+    "require": {
+        "somnambulist/collection": "^2.2",
+        "somnambulist/value-objects": "^1.4",
+        "symfony/console": "^4.2",
+        "symfony/dotenv": "^4.2",
+        "symfony/finder": "^4.2",
+        "symfony/process": "^4.2",
+        "symfony/var-dumper": "^4.2",
+        "symfony/yaml": "^4.2"
+    },
+    "require-dev": {
+    },
+    "config": {
+        "bin-dir": "bin",
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "SyncIt\\": "src"
+        }
+    }
+}

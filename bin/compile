@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+
+$cwd = getcwd();
+chdir(__DIR__ . '/../');
+
+shell_exec('composer config autoloader-suffix MutagenPhar' . time());
+shell_exec('composer install -q --no-dev');
+shell_exec('composer config autoloader-suffix --unset');
+
+chdir($cwd);
+require __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\Console\Output\ConsoleOutput;
+use SyncIt\Services\Compiler;
+
+error_reporting(-1);
+ini_set('display_errors', 1);
+
+try {
+    $file   = dirname(__DIR__) . '/mutagen-sync-it.phar';
+
+    $output = new ConsoleOutput();
+    $output->writeln(sprintf('Compiling mutagen-helper to: <info>%s</info>', $file));
+
+    $compiler = new Compiler();
+    $compiler->compile($file);
+
+    $output->writeln(sprintf('Created: <comment>%s</comment> <info>successfully</info>', $file));
+    $output->writeln(sprintf('SHA-384: <comment>%s</comment>', hash_file('sha384', $file)));
+} catch (\Exception $e) {
+    echo 'Failed to compile phar: [' . get_class($e) . '] ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL;
+    exit(1);
+}

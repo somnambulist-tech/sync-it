@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+set_time_limit(0);
+
+function includeIfExists($file)
+{
+    if (file_exists($file)) {
+        return include $file;
+    }
+}
+
+if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))) {
+    die(
+        'You must set up the project dependencies, run the following commands:'.PHP_EOL.
+        'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
+        'php composer.phar install'.PHP_EOL
+    );
+}
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Dotenv\Dotenv;
+use SyncIt\Commands;
+
+$env = getcwd() . '/.env';
+if (file_exists($env)) {
+    (new Dotenv())->loadEnv($env);
+}
+
+$app = new Application('Sync-It with Mutagen', '1.0.0');
+$app->add(new Commands\EnvParametersCommand());
+$app->add(new Commands\InitCommand());
+$app->add(new Commands\StatusCommand());
+$app->add(new Commands\StartCommand());
+$app->add(new Commands\StopCommand());
+$app->add(new Commands\ViewCommand());
+$app->run();

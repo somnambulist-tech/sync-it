@@ -1,0 +1,124 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SyncIt\Services\Config;
+
+use Assert\Assert;
+use Somnambulist\Collection\Collection;
+use Symfony\Component\Yaml\Yaml;
+use SyncIt\Models\Config;
+use SyncIt\Models\SyncTask;
+
+/**
+ * Class ConfigParser
+ *
+ * @package    SyncIt\Services
+ * @subpackage SyncIt\Services\Config\ConfigParser
+ */
+class ConfigParser
+{
+
+    /**
+     * Converts a Yaml file into a Config object, replacing params
+     *
+     * Config contains several sets of processed data objects, and handles merging
+     * common configuration into the defined tasks.
+     *
+     * @param string $config
+     *
+     * @return Config
+     */
+    public function parse(string $config): Config
+    {
+        $config = Yaml::parse($this->replaceVars($config));
+
+        Assert::lazy()->tryAll()
+            ->that($config, 'config')->keyExists('mutagen', 'The config file should start with a "mutagen" section')
+            ->that($config['mutagen'], 'config')->keyExists('tasks', 'The config file should contain a "tasks" section')
+            ->verifyNow()
+        ;
+
+        $common = Collection::collect($config['mutagen']['common']);
+        $params = Collection::collect($this->getEnvParameters());
+        $tasks  = $this->createTasksFrom($config['mutagen']['tasks'], $common);
+
+        return new Config($common, $tasks, $params);
+    }
+
+    private function createTasksFrom(array $configTasks, Collection $common)
+    {
+        $tasks = new Collection();
+
+        foreach ($configTasks as $label => $data) {
+            Assert::lazy()->tryAll()
+                ->that($data, $label)->keyExists('source', 'The "source" key is required for the task')
+                ->that($data, $label)->keyExists('target', 'The "target" key is required for the task')
+                ->verifyNow()
+            ;
+
+            $data = Collection::collect($data);
+            $options = $data->value('options', new Collection())->unique();
+            $ignore  = $data->value('ignore', new Collection())->unique();
+
+            if ($data->get('use_common', true)) {
+                $options = $common
+                    ->value('options', new Collection())
+                    ->merge($data->value('options', new Collection()))
+                ;
+                $ignore  = $common
+                    ->value('ignore', new Collection())
+                    ->merge($data->value('ignore', new Collection()))
+                    ->removeNulls()
+                    ->unique()
+                ;
+            }
+
+            $tasks->set(
+                $label,
+                new SyncTask(
+                    $label,
+                    (string)$data->get('source'),
+                    (string)$data->get('target'),
+                    (bool)$data->get('use_common', true),
+                    $options,
+                    $ignore
+                )
+            );
+        }
+
+        return $tasks;
+    }
+
+    private function getEnvParameters(): array
+    {
+        $gEnv = Collection::collect($_ENV)->except('SYMFONY_DOTENV_VARS', 'PATH')->removeNulls();
+        $pEnv = Collection::collect(getenv())->except('SYMFONY_DOTENV_VARS', 'PATH')->removeNulls();
+
+        $params = array_merge(
+            [
+                '${PROJECT_DIR}' => getcwd(),
+            ],
+            array_combine(
+                $pEnv->keys()->transform(function ($value) {return sprintf('${%s}', strtoupper($value)); })->toArray(),
+                $pEnv->values()->toArray()
+            ),
+            array_combine(
+                $gEnv->keys()->transform(function ($value) {return sprintf('${%s}', strtoupper($value)); })->toArray(),
+                $gEnv->values()->toArray()
+            )
+        );
+
+        ksort($params);
+
+        return $params;
+    }
+
+    private function replaceVars($config)
+    {
+        return strtr(
+            $config,
+            $this->getEnvParameters()
+        );
+    }
+}
