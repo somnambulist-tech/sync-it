@@ -215,7 +215,7 @@ will be exactly this value but there can only be one of them.
 Alternatively: the target container name can be set to use a name that will
 attempt to be resolved from the running available containers as defined in
 the output from `docker ps`. To do this, change the container name to be:
-`{docker-name:<some_keywords_to_match>}` - don't include the `<>`. The name
+`{docker:name=<some_keywords_to_match>}` - don't include the `<>`. The name
 can contain any valid characters that a container name can have. The default
 that will be substituted is the matching container hex ID. Alternatively the
 matching container name can be used by adding `:name` to the string.
@@ -232,7 +232,7 @@ The configuration using the name resolution would look like the following:
 ```yaml
 composer_lock:
     source: "${PROJECT_DIR}/composer.lock"
-    target: "docker://{docker-name:my-container:name}/app/composer.lock"
+    target: "docker://{docker:name=my-container:name}/app/composer.lock"
 ```
 
 The resulting output from "view" would then contain:
