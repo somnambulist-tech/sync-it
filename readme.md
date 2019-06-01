@@ -40,6 +40,36 @@ This is provided as-is without warranty of any kind. Use at your own risk!
 
 __Caution:__ mis-configuring a mutagen session can cause serious data-loss!
 
+### Lazy Install
+
+__Caution:__ you use the following at your own risk! No responsibility is taken
+if the script causes bad things to happen. You have been warned.
+
+The following will download the current (at the time of writing) phar archive,
+verify the SHA384 hash and copy the phar to `/usr/local/bin`, then symlink it to
+`syncit` and verify it runs by calling `syncit --version`. The script has been
+set up with verbose output.
+
+```bash
+curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-alpha2/mutagen-sync-it.phar \
+  && echo "90a9829593755944b1efb80f67f974dc629e6a95e3efecbcfa9f187d27bf005ffcf110979fd7d11b2f0d5539033cfc5f  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
+  && mv -v /tmp/mutagen-sync-it.phar /usr/local/bin/mutagen-sync-it.phar \
+  && chmod -v 755 /usr/local/bin/mutagen-sync-it.phar \
+  && ln -vf -s /usr/local/bin/mutagen-sync-it.phar /usr/local/bin/syncit \
+  && syncit --ansi --version --no-interaction
+```
+
+If the hash check fails, remove the phar archive.
+
+### Removing SyncIt
+
+Remove any symlinks you have and delete the phar file. No other files are created
+except for any config yaml files. Again: use the following script at your own risk!
+
+```bash
+unlink /usr/local/bin/syncit && rm -v /usr/local/bin/mutagen-sync-it.phar
+```
+
 ### Protecting Yourself From File Overwrites
 
 By way of some safe-guards you can configure a global mutagen config by adding
