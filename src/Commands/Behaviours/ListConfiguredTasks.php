@@ -26,8 +26,10 @@ trait ListConfiguredTasks
 
         $table = new Table($output);
         $table
-            ->setHeaderTitle('Mutagen Sync-It Configured Tasks')
+            ->setHeaderTitle(sprintf('Sync-It -- Configured Tasks -- Mutagen (v%s)', $this->getMutagen()->getVersion()))
             ->setHeaders(['Label', 'Source', 'Target'])
+            ->setColumnWidth(1, 30)
+            ->setColumnWidth(2, 30)
         ;
 
         $tasks->each(function (SyncTask $task) use ($table) {

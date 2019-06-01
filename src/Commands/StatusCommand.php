@@ -30,7 +30,7 @@ class StatusCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getMutagen()->assertDaemonIsRunning();
+        $this->getMutagen()->assertDaemonIsRunning($input, $output, true);
 
         $tasks = $this->getConfig()->getTasks();
 
@@ -38,7 +38,12 @@ class StatusCommand extends BaseCommand
 
         $table = new Table($output);
         $table
-            ->setHeaderTitle('Mutagen Sync-It Active Tasks')
+            ->setHeaderTitle(
+                sprintf(
+                    'Sync-It -- Active Tasks -- Mutagen (v%s)',
+                    $this->getMutagen()->getVersion()
+                )
+            )
             ->setHeaders(['Label', 'Session ID', 'Conn State', 'Sync Status'])
         ;
 

@@ -49,8 +49,10 @@ class Sessions implements \IteratorAggregate, \Countable
      * Maps any available sessions to the appropriate task
      *
      * @param Collection $tasks
+     *
+     * @return Collection
      */
-    public function map(Collection $tasks): void
+    public function map(Collection $tasks): Collection
     {
         $tasks->each(function (SyncTask $task) {
             if ($this->hasSessionFor($task)) {
@@ -59,6 +61,8 @@ class Sessions implements \IteratorAggregate, \Countable
 
             return true;
         });
+
+        return $tasks;
     }
 
     /**
@@ -67,6 +71,7 @@ class Sessions implements \IteratorAggregate, \Countable
      * @param SyncTask $task
      *
      * @return MutagenSession|null
+     * @throws \RuntimeException If there is more than 1 matching session for the task
      */
     public function getSessionFor(SyncTask $task): ?MutagenSession
     {

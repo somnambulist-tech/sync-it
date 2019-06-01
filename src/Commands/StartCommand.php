@@ -72,11 +72,9 @@ HELP
             return 0;
         }
 
-        $this->getMutagen()->assertDaemonIsRunning();
+        $this->getMutagen()->assertDaemonIsRunning($input, $output);
 
-        $tasks = $this->getConfig()->getTasks();
-
-        $this->getMutagen()->getSessions()->map($tasks);
+        $tasks = $this->getMutagen()->getSessions()->map($this->getConfig()->getTasks());
 
         if (!count($labels = $input->getOption('label'))) {
             $labels = $tasks->keys()->toArray();
@@ -100,32 +98,8 @@ HELP
                 return true;
             }
 
-            $command = new Collection([
-                'mutagen', 'create',
-                $task->getSource(),
-                $task->getTarget(),
-            ]);
-
-            if ($this->getMutagen()->hasLabels()) {
-                $command->add(sprintf('--label="%s"', $task->getLabel()));
-            }
-
-            $task->getOptions()->each(function ($value, $key) use ($command) {
-                if (is_null($value) && in_array($key, ['ignore-vcs', 'no-ignore-vcs'])) {
-                    $command->add(sprintf('--%s', $key));
-                    return true;
-                }
-                if (is_null($value)) {
-                    return true;
-                }
-
-                $command->add(sprintf('--%s=%s', $key, $value));
-            });
-            $task->getIgnore()->each(function ($value) use ($command) {
-                $command->add(sprintf('--ignore="%s"', $value));
-            });
-
-            $proc = $this->runProcessViaHelper($output, $command);
+            $command = $this->buildStartCommand($task);
+            $proc    = $this->runProcessViaHelper($output, $command);
 
             if ($proc->isSuccessful()) {
                 $output->writeln(
@@ -141,5 +115,37 @@ HELP
         });
 
         return 0;
+    }
+
+    private function buildStartCommand(SyncTask $task): Collection
+    {
+        $command = new Collection([
+            'mutagen', 'create',
+            $task->getSource(),
+            $task->getTarget(),
+        ]);
+
+        if ($this->getMutagen()->hasLabels()) {
+            $command->add(sprintf('--label="%s"', $task->getLabel()));
+        }
+
+        $task->getOptions()->each(function ($value, $key) use ($command) {
+            if (is_null($value) && in_array($key, ['ignore-vcs', 'no-ignore-vcs'])) {
+                $command->add(sprintf('--%s', $key));
+                return true;
+            }
+            if (is_null($value)) {
+                return true;
+            }
+
+            $command->add(sprintf('--%s=%s', $key, $value));
+
+            return true;
+        });
+        $task->getIgnore()->each(function ($value) use ($command) {
+            $command->add(sprintf('--ignore="%s"', $value));
+        });
+
+        return $command;
     }
 }

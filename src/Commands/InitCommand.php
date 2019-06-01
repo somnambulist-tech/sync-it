@@ -74,7 +74,7 @@ class InitCommand extends BaseCommand
 # it is loaded.
 #
 # Debug available params by using: "./bin/console params"; note: this
-# makes no attempt to hide sensitive env vars. 
+# makes no attempt to hide sensitive env vars.
 #
 
 mutagen:
@@ -110,6 +110,10 @@ mutagen:
             source: "path to source"
             # see: https://mutagen.io/documentation/transports/
             # can be a (running!) docker container, ssh endpoint etc
+            # resolve docker containers to id:
+            #    docker://{docker-name:my-container-name}/folder/to/copy/to
+            # resolve docker containers to a name:
+            #    docker://{docker-name:my-container-name:name}/folder/to/copy/to
             target: "path to target"
             # prevent the common config being used by setting to false
             #use_common: false

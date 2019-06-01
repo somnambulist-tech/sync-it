@@ -48,10 +48,7 @@ fabric.properties
 composer.phar
 /vendor/
 /var/
-.env.*.local
-.env.local
-.user.ini
-.tideways.ini
+.env*
 bin/dc-*
 bin/doctrine*
 bin/simple-phpunit

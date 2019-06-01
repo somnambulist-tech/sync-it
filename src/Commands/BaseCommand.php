@@ -8,6 +8,7 @@ use Symfony\Component\Console\Command\Command;
 use SyncIt\Models\Config;
 use SyncIt\Services\Config\ConfigLocator;
 use SyncIt\Services\Config\ConfigParser;
+use SyncIt\Services\DockerContainerResolver;
 use SyncIt\Services\Mutagen;
 
 /**
@@ -20,7 +21,7 @@ abstract class BaseCommand extends Command
 {
 
     /**
-     * @var \SyncIt\Models\Config
+     * @var Config
      */
     private $config;
 
@@ -29,6 +30,9 @@ abstract class BaseCommand extends Command
      */
     private $mutagen;
 
+    /**
+     * @return Mutagen
+     */
     protected function getMutagen(): Mutagen
     {
         if ($this->mutagen) {
@@ -38,12 +42,18 @@ abstract class BaseCommand extends Command
         return $this->mutagen = new Mutagen();
     }
 
+    /**
+     * @return Config
+     */
     protected function getConfig(): Config
     {
         if ($this->config) {
             return $this->config;
         }
 
-        return $this->config = (new ConfigParser())->parse(file_get_contents((new ConfigLocator())->locate()));
+        return $this->config =
+            (new ConfigParser(new DockerContainerResolver()))
+                ->parse(file_get_contents((new ConfigLocator())->locate()))
+            ;
     }
 }

@@ -39,7 +39,7 @@ class EnvParametersCommand extends BaseCommand
 
         $table = new Table($output);
         $table
-            ->setHeaderTitle('Mutagen Sync-It Detected Env Variables')
+            ->setHeaderTitle('Sync-It -- Detected Env Variables')
             ->setHeaders(['Parameter', 'Current Value'])
             ->setRows($params)
         ;

@@ -9,6 +9,7 @@ use Somnambulist\Collection\Collection;
 use Symfony\Component\Yaml\Yaml;
 use SyncIt\Models\Config;
 use SyncIt\Models\SyncTask;
+use SyncIt\Services\DockerContainerResolver;
 
 /**
  * Class ConfigParser
@@ -18,6 +19,21 @@ use SyncIt\Models\SyncTask;
  */
 class ConfigParser
 {
+
+    /**
+     * @var DockerContainerResolver
+     */
+    private $containerResolver;
+
+    /**
+     * Constructor.
+     *
+     * @param DockerContainerResolver $containerResolver
+     */
+    public function __construct(DockerContainerResolver $containerResolver)
+    {
+        $this->containerResolver = $containerResolver;
+    }
 
     /**
      * Converts a Yaml file into a Config object, replacing params
@@ -46,7 +62,7 @@ class ConfigParser
         return new Config($common, $tasks, $params);
     }
 
-    private function createTasksFrom(array $configTasks, Collection $common)
+    private function createTasksFrom(array $configTasks, Collection $common): Collection
     {
         $tasks = new Collection();
 
@@ -114,11 +130,34 @@ class ConfigParser
         return $params;
     }
 
-    private function replaceVars($config)
+    private function replaceVars(string $config): string
     {
-        return strtr(
+        return $this->resolveContainerNames(strtr(
             $config,
             $this->getEnvParameters()
-        );
+        ));
+    }
+
+    private function resolveContainerNames($config): string
+    {
+        $matches = [];
+
+        $res = preg_match_all('/\{docker:name=(?P<service>[\w_-]+):?(?<format>(id|name))?\}/', $config, $matches);
+
+        if (!$res) {
+            return $config;
+        }
+
+        $labels       = $matches[0];
+        $replacements = [];
+
+        foreach ($labels as $match => $parameter) {
+            $replacements[$match] = $this->containerResolver->containerFromNameFilter(
+                $matches['service'][$match],
+                $matches['format'][$match] ?? 'id'
+            );
+        }
+
+        return str_replace($labels, $replacements, $config);
     }
 }

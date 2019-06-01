@@ -6,6 +6,7 @@ namespace SyncIt\Commands;
 
 use Somnambulist\Collection\Collection;
 use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -72,27 +73,69 @@ HELP
             return 0;
         }
 
-        $this->getMutagen()->assertDaemonIsRunning();
+        $this->getMutagen()->assertDaemonIsRunning($input, $output, false);
 
-        $tasks = $this->getConfig()->getTasks();
-
-        $this->getMutagen()->getSessions()->map($tasks);
-
+        $tasks  = $this->getMutagen()->getSessions()->map($this->getConfig()->getTasks());
         $labels = (array)$input->getOption('label');
+
         if (count($labels) < 1) {
             $labels = $tasks->keys()->toArray();
         }
         if (!count($input->getOption('label'))) {
-            /** @var QuestionHelper $helper */
-            $helper = $this->getHelper('question');
-            $question = new ChoiceQuestion('Which task would you like to stop? ', $tasks->keys()->add('All')->toArray());
-
-            $label = $helper->ask($input, $output, $question);
-            if ($label !== 'All') {
-                $labels = [$label];
+            if (!is_array($labels = $this->promptForLabelsToStop($input, $output, $tasks, $labels))) {
+                return $labels;
             }
         }
 
+        $this->stopSelectedTasks($output, $tasks, $labels);
+
+        return 0;
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param Collection      $tasks
+     * @param array           $labels
+     *
+     * @return array|int
+     */
+    private function promptForLabelsToStop(InputInterface $input, OutputInterface $output, Collection $tasks, array $labels)
+    {
+        /** @var QuestionHelper $helper */
+        $helper   = $this->getHelper('question');
+        $question = new ChoiceQuestion(
+            'Which task would you like to stop? ',
+            $tasks->keys()->add('All')->add( 'All & Daemon')->toArray()
+        );
+
+        $label = strtolower((string)$helper->ask($input, $output, $question));
+
+        if ('all & daemon' === $label) {
+            $output->writeln('Stopping all tasks and the mutagen daemon...');
+            if ($this->getMutagen()->stop()) {
+                $output->writeln('<fg=black;bg=green> STOP </> stopped all sessions and daemon successfully');
+
+                return 0;
+            }
+
+            $output->writeln('<fg=white;bg=red> ERR </> failed to stop processes! Check mutagen status');
+            return 1;
+
+        } elseif ('all' !== $label) {
+            $labels = [$label];
+        }
+
+        return $labels;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param Collection      $tasks
+     * @param array|string[]  $labels
+     */
+    private function stopSelectedTasks(OutputInterface $output, Collection $tasks, array $labels): void
+    {
         $output->writeln(sprintf('Stopping <info>%s</info> sync tasks', count($labels)));
 
         $tasks->only($labels)->each(function (SyncTask $task) use ($output) {
@@ -101,18 +144,23 @@ HELP
             }
 
             $output->writeln(sprintf('<fg=white;bg=blue> STOP </> task <fg=yellow>"%s"</> is not running', $task->getLabel()));
+
             return true;
         });
-
-        return 0;
     }
 
-    private function stopTask(OutputInterface $output, SyncTask $task)
+    /**
+     * @param OutputInterface $output
+     * @param SyncTask        $task
+     *
+     * @return bool
+     */
+    private function stopTask(OutputInterface $output, SyncTask $task): bool
     {
         $command = new Collection(['mutagen', 'terminate']);
 
         if ($this->getMutagen()->hasLabels()) {
-            $command->add(sprintf('--label="%s"', $task->getLabel()));
+            $command->add(sprintf('--label-selector="%s"', $task->getLabel()));
         } else {
             $command->add($task->getSession()->getId());
         }
@@ -128,5 +176,7 @@ HELP
                 sprintf('<error> ERR </error> failed to start session for <fg=yellow>"%s"</>; check options', $task->getLabel())
             );
         }
+
+        return true;
     }
 }

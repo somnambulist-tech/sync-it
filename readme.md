@@ -24,6 +24,7 @@ SyncIt has only been tested on macOS Mojave.
  * custom file location via a `MUTAGEN_SYNC_IT_CONFIG` env param
  * phar archive
  * support for .env files (including overrides)
+ * docker container resolution from a specified name
 
 ## Setup
 
@@ -173,6 +174,58 @@ This allows the task name to be used consistently regardless of mutagen version.
 The target supports different transport mechanisms e.g. docker:// ssh:// etc.
 Be sure to read the format / rules at: https://mutagen.io/documentation/transports/
 
+#### Docker Containers
+
+When using docker; to make life easier you should use named containers with
+predictable / repeatable names via the `--name` flag on `docker run` or use
+docker compose and use a service name or, especially in dev, a specific name
+can be set using `container_name:`. If the latter is chosen, the container name
+will be exactly this value but there can only be one of them.
+
+Alternatively: the target container name can be set to use a name that will
+attempt to be resolved from the running available containers as defined in
+the output from `docker ps`. To do this, change the container name to be:
+`{docker-name:<some_keywords_to_match>}` - don't include the `<>`. The name
+can contain any valid characters that a container name can have. The default
+that will be substituted is the matching container hex ID. Alternatively the
+matching container name can be used by adding `:name` to the string.
+
+Doing this is the equivalent of performing:
+
+```
+$ docker ps --no-trunc --format="{{.ID}}" --filter=name="my-container"
+$ docker ps --no-trunc --format="{{.Names}}" --filter=name="my-container"
+```
+
+The configuration using the name resolution would look like the following:
+
+```yaml
+composer_lock:
+    source: "${PROJECT_DIR}/composer.lock"
+    target: "docker://{docker-name:my-container:name}/app/composer.lock"
+```
+
+The resulting output from "view" would then contain:
+
+```
+| Target (beta)        | docker://1fac35046452b0f6d7de0167399d6f4f7f68968ca3a844a385d |
+|                      | b5ff361df4717/app                                            |
+```
+
+While using `:name` would give:
+
+```
+| Target (beta)        | docker://my-project_my-container_1/app                       |
+```
+
+__Note:__ the chosen name must result in only **1** container. If none or more than
+one are found, SyncIt will raise an error. In the case of multiple matches, all
+matched names will be in the error (useful when used with `:name`).
+
+__Note:__ name resolution is performed after .env resolution. So you can use a
+ENV parameter for the container name and share it between the SyncIt config file
+and a docker-compose.yml file.
+
 ## Managing Tasks
 
 SyncIt acts as a wrapper over `mutagen create|terminate|list` in a pretty basic
@@ -220,6 +273,7 @@ file location / name.
 ## Issues / Questions
 
 Make an issue on the github repo: https://github.com/dave-redfern/somnambulist-sync-it/issues
+
 Pull requests are welcome!
 
 ## Other Options

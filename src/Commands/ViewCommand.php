@@ -68,7 +68,13 @@ class ViewCommand extends BaseCommand
 
         $summary = new Table($output);
         $summary
-            ->setHeaderTitle(sprintf('Sync-It for <fg=blue;bg=white;options=bold>%s</>', $task->getLabel()))
+            ->setHeaderTitle(
+                sprintf(
+                    'Sync-It -- Status for <fg=blue;bg=white;options=bold>%s</> -- Mutagen (v%s)',
+                    $task->getLabel(),
+                    $this->getMutagen()->getVersion()
+                )
+            )
             ->setHeaders(['', 'Value'])
             ->setColumnWidth(0, 20)
             ->setColumnWidth(1, 60)
