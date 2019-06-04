@@ -31,6 +31,7 @@ if (file_exists($env)) {
 $app = new Application('Sync-It with Mutagen', '1.0.0');
 $app->add(new Commands\EnvParametersCommand());
 $app->add(new Commands\InitCommand());
+$app->add(new Commands\MonitorCommand());
 $app->add(new Commands\StatusCommand());
 $app->add(new Commands\StartCommand());
 $app->add(new Commands\StopCommand());
