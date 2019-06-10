@@ -160,7 +160,7 @@ HELP
         $command = new Collection(['mutagen', 'terminate']);
 
         if ($this->getMutagen()->hasLabels()) {
-            $command->add(sprintf('--label-selector="%s"', $task->getLabel()));
+            $command->add(sprintf('--label-selector=%s', $task->getLabel()));
         } else {
             $command->add($task->getSession()->getId());
         }
