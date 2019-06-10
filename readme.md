@@ -51,8 +51,8 @@ verify the SHA384 hash and copy the phar to `/usr/local/bin`, then symlink it to
 set up with verbose output.
 
 ```bash
-curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-alpha3/mutagen-sync-it.phar \
-  && echo "4060e2936fb64fa8f3c30ac1eb536af1b258a9e4db0eca092c1807923d837056a1340b2ad38e529c64f0557cb6d611c0  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
+curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-alpha4/mutagen-sync-it.phar \
+  && echo "1c9fd88966f2e65a603c256880350d42f06a7bbae9088adaaedcbbab10ec6b4c5cc028f63cad256fa0aae635e27d01a2  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
   && mv -v /tmp/mutagen-sync-it.phar /usr/local/bin/mutagen-sync-it.phar \
   && chmod -v 755 /usr/local/bin/mutagen-sync-it.phar \
   && ln -vf -s /usr/local/bin/mutagen-sync-it.phar /usr/local/bin/syncit \
