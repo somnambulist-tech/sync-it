@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SyncIt\Commands\Behaviours;
 
-use Somnambulist\Collection\Collection;
+use Somnambulist\Collection\MutableCollection as Collection;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Console\Output\OutputInterface;

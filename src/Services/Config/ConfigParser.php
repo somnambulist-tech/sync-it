@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SyncIt\Services\Config;
 
 use Assert\Assert;
-use Somnambulist\Collection\Collection;
+use Somnambulist\Collection\MutableCollection as Collection;
 use Symfony\Component\Yaml\Yaml;
 use SyncIt\Models\Config;
 use SyncIt\Models\SyncTask;
@@ -73,7 +73,8 @@ class ConfigParser
                 ->verifyNow()
             ;
 
-            $data = Collection::collect($data);
+            $label   = $common->hasValueFor('label_prefix') ? sprintf('%s_%s', $common->get('label_prefix'), $label) : $label;
+            $data    = Collection::collect($data);
             $options = $data->value('options', new Collection())->unique();
             $ignore  = $data->value('ignore', new Collection())->unique();
 
@@ -116,11 +117,11 @@ class ConfigParser
                 '${PROJECT_DIR}' => getcwd(),
             ],
             array_combine(
-                $pEnv->keys()->transform(function ($value) {return sprintf('${%s}', strtoupper($value)); })->toArray(),
+                $pEnv->keys()->map(function ($value) {return sprintf('${%s}', strtoupper($value)); })->toArray(),
                 $pEnv->values()->toArray()
             ),
             array_combine(
-                $gEnv->keys()->transform(function ($value) {return sprintf('${%s}', strtoupper($value)); })->toArray(),
+                $gEnv->keys()->map(function ($value) {return sprintf('${%s}', strtoupper($value)); })->toArray(),
                 $gEnv->values()->toArray()
             )
         );

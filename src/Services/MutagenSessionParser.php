@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SyncIt\Services;
 
-use Somnambulist\Collection\Collection;
+use Somnambulist\Collection\MutableCollection as Collection;
 use Symfony\Component\Process\Process;
 use SyncIt\Models\MutagenSession;
 use SyncIt\Models\Sessions;

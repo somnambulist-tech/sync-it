@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SyncIt\Models;
 
-use Somnambulist\Collection\Collection;
+use Somnambulist\Collection\MutableCollection as Collection;
 
 /**
  * Class Config

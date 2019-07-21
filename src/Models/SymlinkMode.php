@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SyncIt\Models;
 
-use Somnambulist\ValueObjects\AbstractEnumeration;
+use Somnambulist\Domain\Entities\AbstractEnumeration;
 
 /**
  * Class SymlinkMode

@@ -30,7 +30,7 @@ class EnvParametersCommand extends BaseCommand
         $params = $this
             ->getConfig()
             ->getParameters()
-            ->transform(function ($value, $key) {
+            ->map(function ($value, $key) {
                 return [$key, $value];
             })
             ->values()

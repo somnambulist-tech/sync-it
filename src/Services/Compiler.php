@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SyncIt\Services;
 
+use Phar;
+use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
@@ -27,7 +29,7 @@ class Compiler
      *
      * @param string $pharFile The full path to the file to create
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function compile($pharFile = 'mutagen-sync-it.phar')
     {
@@ -35,7 +37,7 @@ class Compiler
             unlink($pharFile);
         }
 
-        $phar = new \Phar($pharFile, 0, 'mutagen-sync-it.phar');
+        $phar = new Phar($pharFile, 0, 'mutagen-sync-it.phar');
         $phar->startBuffering();
 
         $finderSort = function (SplFileInfo $a, SplFileInfo $b) {
@@ -57,6 +59,7 @@ class Compiler
             ->in($basePath . '/src/')
             ->in($basePath . '/vendor/beberlei/')
             ->in($basePath . '/vendor/eloquent/')
+            ->in($basePath . '/vendor/psr/')
             ->in($basePath . '/vendor/somnambulist/')
             ->in($basePath . '/vendor/symfony/')
             ->sort($finderSort)
@@ -66,17 +69,17 @@ class Compiler
             $this->addFile($phar, $file);
         }
 
-        $this->addFile($phar, new \SplFileInfo($basePath . '/vendor/autoload.php'));
-        $this->addFile($phar, new \SplFileInfo($basePath . '/vendor/composer/autoload_namespaces.php'));
-        $this->addFile($phar, new \SplFileInfo($basePath . '/vendor/composer/autoload_psr4.php'));
-        $this->addFile($phar, new \SplFileInfo($basePath . '/vendor/composer/autoload_classmap.php'));
-        $this->addFile($phar, new \SplFileInfo($basePath . '/vendor/composer/autoload_files.php'));
-        $this->addFile($phar, new \SplFileInfo($basePath . '/vendor/composer/autoload_real.php'));
-        $this->addFile($phar, new \SplFileInfo($basePath . '/vendor/composer/autoload_static.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/autoload.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_namespaces.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_psr4.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_classmap.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_files.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_real.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_static.php'));
         if (file_exists($basePath . '/vendor/composer/include_paths.php')) {
-            $this->addFile($phar, new \SplFileInfo($basePath . '/vendor/composer/include_paths.php'));
+            $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/include_paths.php'));
         }
-        $this->addFile($phar, new \SplFileInfo($basePath . '/vendor/composer/ClassLoader.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/ClassLoader.php'));
 
         $this->addBin($phar);
 
@@ -90,7 +93,7 @@ class Compiler
         chmod($pharFile, 0755);
     }
 
-    private function addFile(\Phar $phar, SplFileInfo $file, $strip = true): void
+    private function addFile(Phar $phar, SplFileInfo $file, $strip = true): void
     {
         $path = strtr(str_replace(realpath($this->basePath()), '', $file->getRealPath()), '\\', '/');
 
@@ -104,7 +107,7 @@ class Compiler
         $phar->addFromString($path, $content);
     }
 
-    private function addBin(\Phar $phar)
+    private function addBin(Phar $phar)
     {
         $content = file_get_contents($this->basePath() . '/bin/console');
         $content = preg_replace('{^#!/usr/bin/env php\s*}', '', $content);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SyncIt\Services;
 
+use RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -68,11 +69,11 @@ class Mutagen
                     return;
                 }
 
-                throw new \RuntimeException('Failed to start mutagen, is it available in your path?');
+                throw new RuntimeException('Failed to start mutagen, is it available in your path?');
             }
         }
 
-        throw new \RuntimeException(sprintf('The mutagen daemon is not running, run: "%s"', static::DAEMON_START));
+        throw new RuntimeException(sprintf('The mutagen daemon is not running, run: "%s"', static::DAEMON_START));
     }
 
     public function getVersion(): string

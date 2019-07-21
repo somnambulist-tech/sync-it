@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SyncIt\Commands;
 
-use Somnambulist\Collection\Collection;
+use Somnambulist\Collection\MutableCollection as Collection;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -92,7 +92,7 @@ HELP
 
         $output->writeln(sprintf('Starting <info>%s</info> sync tasks', count($labels)));
 
-        $tasks->only($labels)->each(function (SyncTask $task) use ($output) {
+        $tasks->only(...$labels)->each(function (SyncTask $task) use ($output) {
             if ($task->isRunning()) {
                 $output->writeln(sprintf('<fg=white;bg=blue> RUN </> task <fg=yellow>"%s"</> is already running', $task->getLabel()));
                 return true;

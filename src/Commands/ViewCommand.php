@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SyncIt\Commands;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -61,7 +62,7 @@ class ViewCommand extends BaseCommand
 
         /** @var SyncTask $task */
         if (null === $task = $tasks->get($label)) {
-            throw new \InvalidArgumentException(sprintf('Task with label "%s" not found in current project', $label));
+            throw new InvalidArgumentException(sprintf('Task with label "%s" not found in current project', $label));
         }
 
         $output->writeln('');
@@ -96,7 +97,7 @@ class ViewCommand extends BaseCommand
             ->setColumnMaxWidth(0, 30)
             ->setColumnWidth(1, 50)
             ->setColumnMaxWidth(1, 50)
-            ->addRows($task->getOptions()->transform(function ($value, $key) { return [$key, $value];})->toArray())
+            ->addRows($task->getOptions()->map(function ($value, $key) { return [$key, $value];})->toArray())
         ;
         $options->render();
 
@@ -106,7 +107,7 @@ class ViewCommand extends BaseCommand
             ->setHeaders(['Rule'])
             ->setColumnWidth(0, 83)
             ->setColumnMaxWidth(0, 83)
-            ->addRows($task->getIgnore()->transform(function ($value, $key) { return [$value];})->toArray())
+            ->addRows($task->getIgnore()->map(function ($value, $key) { return [$value];})->toArray())
         ;
         $ignore->render();
 

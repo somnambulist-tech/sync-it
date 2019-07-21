@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SyncIt\Services;
 
+use RuntimeException;
+
 /**
  * Class DockerContainerResolver
  *
@@ -27,7 +29,7 @@ class DockerContainerResolver
      * @param string $format Either id or name, default id
      *
      * @return string
-     * @throws \RuntimeException
+     * @throws RuntimeException
      *
      * @link https://docs.docker.com/engine/reference/commandline/ps/#formatting
      */
@@ -48,13 +50,13 @@ class DockerContainerResolver
         exec($command, $containers, $success);
 
         if (0 !== $success) {
-            throw new \RuntimeException(sprintf('Unable to query docker, exit code was "%s"', $success));
+            throw new RuntimeException(sprintf('Unable to query docker, exit code was "%s"', $success));
         }
         if (count($containers) == 0) {
-            throw new \RuntimeException(sprintf('No containers found matching name "%s"', $name));
+            throw new RuntimeException(sprintf('No containers found matching name "%s"', $name));
         }
         if (count($containers) > 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Multiple matches for "%s"; use a more specific name ("%s")', $name, implode('", "', $containers))
             );
         }

@@ -79,6 +79,10 @@ class InitCommand extends BaseCommand
 
 mutagen:
     common:
+        # a project name for the labels; the same label could exist across projects
+        # this prefix allows to set a per-project name e.g. admin or users etc.
+        label_prefix: ~
+        
         # main options not including ignore rules
         options:
             # see: https://mutagen.io/documentation/permissions/

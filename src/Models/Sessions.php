@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace SyncIt\Models;
 
-use Somnambulist\Collection\Collection;
+use Countable;
+use IteratorAggregate;
+use RuntimeException;
+use Somnambulist\Collection\MutableCollection as Collection;
 
 /**
  * Class Sessions
@@ -12,7 +15,7 @@ use Somnambulist\Collection\Collection;
  * @package    SyncIt\Models
  * @subpackage SyncIt\Models\Sessions
  */
-class Sessions implements \IteratorAggregate, \Countable
+class Sessions implements IteratorAggregate, Countable
 {
 
     /**
@@ -71,7 +74,7 @@ class Sessions implements \IteratorAggregate, \Countable
      * @param SyncTask $task
      *
      * @return MutagenSession|null
-     * @throws \RuntimeException If there is more than 1 matching session for the task
+     * @throws RuntimeException If there is more than 1 matching session for the task
      */
     public function getSessionFor(SyncTask $task): ?MutagenSession
     {
@@ -80,7 +83,7 @@ class Sessions implements \IteratorAggregate, \Countable
         });
 
         if ($session->count() > 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Task "%s" matched more than one session; use "mutagen list" instead', $task->getLabel())
             );
         }

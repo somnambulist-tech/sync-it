@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SyncIt\Services\Config;
 
+use RuntimeException;
+
 /**
  * Class ConfigLocator
  *
@@ -22,7 +24,7 @@ class ConfigLocator
             return $file;
         }
 
-        throw new \RuntimeException(
+        throw new RuntimeException(
             sprintf('Failed to locate a config file in local project (%s) or from environment (%s)', static::FILE_NAME, static::ENV_NAME)
         );
     }

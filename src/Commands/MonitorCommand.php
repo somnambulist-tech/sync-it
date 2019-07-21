@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SyncIt\Commands;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -62,10 +63,10 @@ class MonitorCommand extends BaseCommand
 
         /** @var SyncTask $task */
         if (null === $task = $tasks->get($label)) {
-            throw new \InvalidArgumentException(sprintf('Task with label "%s" not found in current project', $label));
+            throw new InvalidArgumentException(sprintf('Task with label "%s" not found in current project', $label));
         }
         if (!$task->isRunning()) {
-            throw new \InvalidArgumentException(sprintf('The task "%s" is not running', $label));
+            throw new InvalidArgumentException(sprintf('The task "%s" is not running', $label));
         }
 
         $output->writeln('Starting monitor, use <info>Ctrl+C</info> to stop');

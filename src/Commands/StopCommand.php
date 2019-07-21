@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace SyncIt\Commands;
 
-use Somnambulist\Collection\Collection;
+use Somnambulist\Collection\MutableCollection as Collection;
 use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -138,7 +137,7 @@ HELP
     {
         $output->writeln(sprintf('Stopping <info>%s</info> sync tasks', count($labels)));
 
-        $tasks->only($labels)->each(function (SyncTask $task) use ($output) {
+        $tasks->only(...$labels)->each(function (SyncTask $task) use ($output) {
             if ($task->isRunning()) {
                 return $this->stopTask($output, $task);
             }

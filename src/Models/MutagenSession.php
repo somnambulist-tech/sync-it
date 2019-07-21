@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SyncIt\Models;
 
-use Somnambulist\ValueObjects\AbstractValueObject;
+use Somnambulist\Domain\Entities\AbstractValueObject;
 
 /**
  * Class MutagenSession
@@ -103,7 +103,7 @@ class MutagenSession extends AbstractValueObject
         return $this->status;
     }
 
-    public function equals($object): bool
+    public function equals(object $object): bool
     {
         if (!$object instanceof SyncTask) {
             return false;
