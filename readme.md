@@ -51,8 +51,8 @@ verify the SHA384 hash and copy the phar to `/usr/local/bin`, then symlink it to
 set up with verbose output.
 
 ```bash
-curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-alpha4/mutagen-sync-it.phar \
-  && echo "1c9fd88966f2e65a603c256880350d42f06a7bbae9088adaaedcbbab10ec6b4c5cc028f63cad256fa0aae635e27d01a2  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
+curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-beta1/mutagen-sync-it.phar \
+  && echo "65ea31e032e6b56c2fb8efdee70fc1ae941e8b8341496cd3c763f03707f9a15da354f9f96ec9cc88397bb13e3c28422d  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
   && mv -v /tmp/mutagen-sync-it.phar /usr/local/bin/mutagen-sync-it.phar \
   && chmod -v 755 /usr/local/bin/mutagen-sync-it.phar \
   && ln -vf -s /usr/local/bin/mutagen-sync-it.phar /usr/local/bin/syncit \
@@ -121,6 +121,8 @@ The config file is split into 2 sections:
 ```yaml
 mutagen:
     common:
+        label_prefix: ~
+        
         options:
             default-directory-mode: '0755'
             default-file-mode: '0644'
@@ -179,6 +181,10 @@ where one is not set are not passed through to mutagen.
 
 Read more: https://mutagen.io/documentation or use the `--help` option on
 the mutagen command line program e.g.: `mutagen create --help`.
+
+Since 1.0.0-beta1 `label_prefix` has been added to the common section. This allows
+a common prefix e.g. a project name to be prefixed to all the task labels. Useful
+if you use common labels with multiple projects.
 
 ### Tasks
 
