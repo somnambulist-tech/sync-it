@@ -51,8 +51,8 @@ verify the SHA384 hash and copy the phar to `/usr/local/bin`, then symlink it to
 set up with verbose output.
 
 ```bash
-curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-beta1/mutagen-sync-it.phar \
-  && echo "65ea31e032e6b56c2fb8efdee70fc1ae941e8b8341496cd3c763f03707f9a15da354f9f96ec9cc88397bb13e3c28422d  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
+curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-beta2/mutagen-sync-it.phar \
+  && echo "a78b5ffe3cf0ef45a832a5f14bf92b7c0d9c1a5e025b7ead4070d89e4f84974b09ee884522a9fd059b5a9a5dc6b33e95  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
   && mv -v /tmp/mutagen-sync-it.phar /usr/local/bin/mutagen-sync-it.phar \
   && chmod -v 755 /usr/local/bin/mutagen-sync-it.phar \
   && ln -vf -s /usr/local/bin/mutagen-sync-it.phar /usr/local/bin/syncit \
@@ -122,7 +122,7 @@ The config file is split into 2 sections:
 mutagen:
     common:
         label_prefix: ~
-        
+
         options:
             default-directory-mode: '0755'
             default-file-mode: '0644'
@@ -301,7 +301,7 @@ overrides.
 To build the phar archive, first checkout / clone the sync-it project, run
 `composer install` and ensure that `phar.readonly` is set to `0` in your
 php.ini.
- 
+
 You can then run: `bin/compile` which will create a `mutagen-sync-it.phar` file
 in the project root. The compile will output the SHA384 hash together with the
 file location / name.
