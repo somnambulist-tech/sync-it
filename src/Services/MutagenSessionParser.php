@@ -76,6 +76,10 @@ class MutagenSessionParser
                 $parsedData[$counter]['id'] = trim(str_ireplace('session:', '', $line));
                 continue;
             }
+            if (false !== stripos($line, 'identifier') && !isset($parsedData[$counter]['id'])) {
+                $parsedData[$counter]['id'] = trim(str_ireplace('identifier:', '', $line));
+                continue;
+            }
             if (false !== stripos($line, 'alpha')) {
                 $mode = 'source';
                 continue;

@@ -44,7 +44,7 @@ class StatusCommand extends BaseCommand
                     $this->getMutagen()->getVersion()
                 )
             )
-            ->setHeaders(['Label', 'Session ID', 'Conn State', 'Sync Status'])
+            ->setHeaders(['Label', 'Identifier', 'Conn State', 'Sync Status'])
         ;
 
         $tasks->each(function (SyncTask $task) use ($table) {

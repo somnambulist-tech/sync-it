@@ -9,8 +9,10 @@ SyncIt runs from a config file typically located in your project root named:
 Inside the config file you can define any number of sync tasks. Each task
 should be a unique combination of a source (the alpha) and a target (beta).
 
-Currently SyncIt has been tested against mutagen 0.8.3. There is limited
-support for 0.9.0 beta `--label=`.
+Currently SyncIt has been tested against mutagen 0.8.3, 0.9.0, 0.9.1, 0.9.2,
+and 0.10.0.
+
+There is support for labels including project prefixes.
 
 SyncIt has only been tested on macOS Mojave.
 
@@ -19,7 +21,7 @@ SyncIt has only been tested on macOS Mojave.
  * simple yaml configuration
  * common options and ignore rules that are shared by tasks
  * all mutagen `create` flags are supported
- * labels (without 0.9.0 beta)
+ * labels (without 0.9.0 beta+)
  * multiple tasks per project file
  * custom file location via a `MUTAGEN_SYNC_IT_CONFIG` env param
  * phar archive
@@ -51,8 +53,8 @@ verify the SHA384 hash and copy the phar to `/usr/local/bin`, then symlink it to
 set up with verbose output.
 
 ```bash
-curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-beta2/mutagen-sync-it.phar \
-  && echo "a78b5ffe3cf0ef45a832a5f14bf92b7c0d9c1a5e025b7ead4070d89e4f84974b09ee884522a9fd059b5a9a5dc6b33e95  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
+curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-beta3/mutagen-sync-it.phar \
+  && echo "e18ebaf1d7b2166797c33a5149e82d8cb1e810b7c52823615d717b612c6159c3483983992814acd459cd560bf6c7952d  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
   && mv -v /tmp/mutagen-sync-it.phar /usr/local/bin/mutagen-sync-it.phar \
   && chmod -v 755 /usr/local/bin/mutagen-sync-it.phar \
   && ln -vf -s /usr/local/bin/mutagen-sync-it.phar /usr/local/bin/syncit \
@@ -73,8 +75,11 @@ unlink /usr/local/bin/syncit && rm -v /usr/local/bin/mutagen-sync-it.phar
 ### Protecting Yourself From File Overwrites
 
 By way of some safe-guards you can configure a global mutagen config by adding
-a `.mutagen.toml` file to your home folder `cd ~`. This file defines global
-defaults that will be applied to all sessions (see mutagen.io for more details)
+a `.mutagen.toml` or `.mutagen.yml` file to your home folder `cd ~`. This file
+defines global defaults that will be applied to all sessions (see mutagen.io
+for more details)
+
+__Note:__ the TOML format is deprecated from Mutagen 0.10.0. YAML should be used.
 
 ```
 [ignore]
@@ -103,6 +108,32 @@ mode = "one-way-replica"
 [permissions]
 defaultFileMode=0644
 defaultDirectoryMode=0755
+```
+
+Or in YAML format: 
+
+```
+sync:
+    defaults:
+        mode: one-way-replica
+        ignore:
+            vcs: true
+            paths:
+                # System files
+                - ".DS_Store",
+                - "._*",
+                  
+                # Vim files
+                - "*~",
+                - "*.sw[a-p]",
+
+                # Common folders and files
+                - ".idea",
+        symlink:
+            mode: ignore
+        permissions:
+            defaultFileMode: 0644
+            defaultDirectoryMode: 0755
 ```
 
 The above ensures that all syncs are created using `one-way-replica`. This
