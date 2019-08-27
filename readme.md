@@ -120,15 +120,15 @@ sync:
             vcs: true
             paths:
                 # System files
-                - ".DS_Store",
-                - "._*",
+                - ".DS_Store"
+                - "._*"
                   
                 # Vim files
-                - "*~",
-                - "*.sw[a-p]",
+                - "*~"
+                - "*.sw[a-p]"
 
                 # Common folders and files
-                - ".idea",
+                - ".idea"
         symlink:
             mode: ignore
         permissions:
