@@ -27,6 +27,7 @@ try {
     $compiler->compile($file);
 
     $output->writeln(sprintf('Created: <comment>%s</comment> <info>successfully</info>', $file));
+    $output->writeln(sprintf('SHA-256: <comment>%s</comment>', hash_file('sha256', $file)));
     $output->writeln(sprintf('SHA-384: <comment>%s</comment>', hash_file('sha384', $file)));
 } catch (\Exception $e) {
     echo 'Failed to compile phar: [' . get_class($e) . '] ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL;
