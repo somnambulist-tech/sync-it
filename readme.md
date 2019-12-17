@@ -1,5 +1,7 @@
 # Sync-It for Mutagen (Mutagen Sync-It)
 
+[![GitHub Actions release Build Status](https://github.com/dave-redfern/somnambulist-sync-it/workflows/release/badge.svg)](https://github.com/dave-redfern/somnambulist-sync-it/actions?query=workflow%3Arelease)
+
 SyncIt is a helper (phar archive) to make it easier to work with sessions when
 running [mutagen](https://mutagen.io/).
 
@@ -32,6 +34,12 @@ SyncIt has only been tested on macOS Mojave.
 
 Grab the phar archive and copy it to `/usr/local/bin` or add it to your path.
 Symlink the phar to `syncit` or a.n.other name.
+
+Or install via brew:
+
+```bash
+brew install dave-redfern/somnambulist/syncit
+```
 
 In your project root e.g. `~/Projects/my-web-project` run: `syncit init` to
 create a default, commented config file named `.mutagen_sync_it.yaml`.
