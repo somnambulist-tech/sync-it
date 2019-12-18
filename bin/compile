@@ -26,7 +26,14 @@ try {
     $compiler = new Compiler();
     $compiler->compile($file);
 
+    file_put_contents($checksums = dirname(__DIR__) . '/mutagen-sync-it_checksums.txt', implode("\n", [
+        basename($file),
+        'sha256sum ' . hash_file('sha256', $file),
+        'sha384sum ' . hash_file('sha384', $file),
+    ]) . "\n");
+
     $output->writeln(sprintf('Created: <comment>%s</comment> <info>successfully</info>', $file));
+    $output->writeln(sprintf('Created: <comment>%s</comment> <info>successfully</info>', $checksums));
     $output->writeln(sprintf('SHA-256: <comment>%s</comment>', hash_file('sha256', $file)));
     $output->writeln(sprintf('SHA-384: <comment>%s</comment>', hash_file('sha384', $file)));
 } catch (\Exception $e) {
