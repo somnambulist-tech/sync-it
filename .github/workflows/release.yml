@@ -32,7 +32,7 @@ jobs:
           draft: false
           prerelease: false
       - name: Upload Release Phar Asset
-        id: upload-release-asset 
+        id: upload-release-phar-asset
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +42,7 @@ jobs:
           asset_name: mutagen-sync-it.phar
           asset_content_type: application/octet-stream
       - name: Upload Release Checksums Asset
-        id: upload-release-asset
+        id: upload-release-checksums-asset
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
