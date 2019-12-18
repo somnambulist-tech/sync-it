@@ -5,23 +5,22 @@ declare(strict_types=1);
 namespace SyncIt\Commands;
 
 use InvalidArgumentException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Process\Process;
 use SyncIt\Commands\Behaviours\ListConfiguredTasks;
 use SyncIt\Commands\Behaviours\RunWrappedProcess;
 use SyncIt\Models\SyncTask;
 
 /**
- * Class MonitorCommand
+ * Class DebugCommand
  *
  * @package    SyncIt\Commands
- * @subpackage SyncIt\Commands\MonitorCommand
+ * @subpackage SyncIt\Commands\DebugCommand
  */
-class MonitorCommand extends BaseCommand
+class DebugCommand extends BaseCommand
 {
 
     use ListConfiguredTasks;
@@ -30,9 +29,9 @@ class MonitorCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('monitor')
-            ->setDescription('Monitor the chosen task via mutagen monitor')
-            ->addArgument('label', InputArgument::OPTIONAL, 'The task (label) to monitor')
+            ->setName('debug')
+            ->setDescription('Fetches the raw output from mutagen to aid debugging a failing task')
+            ->addArgument('label', InputArgument::OPTIONAL, 'The task label(s) to inspect')
             ->addOption('list', null, InputOption::VALUE_NONE, 'List available tasks')
         ;
     }
@@ -46,13 +45,11 @@ class MonitorCommand extends BaseCommand
             return 0;
         }
 
-        $this->getMutagen()->assertDaemonIsRunning($input, $output, false);
-
         $tasks = $this->getConfig()->getTasks();
         $label = $input->getArgument('label');
 
         if (!$label) {
-            $label = $this->tools()->choose('Which task would you like to monitor? ', $tasks->keys()->toArray());
+            $label = $this->tools()->choose('Which task do you want to debug? ', $tasks->keys()->toArray());
         }
 
         $this->getMutagen()->getSessions()->map($tasks);
@@ -61,16 +58,12 @@ class MonitorCommand extends BaseCommand
         if (null === $task = $tasks->get($label)) {
             throw new InvalidArgumentException(sprintf('Task with label "%s" not found in current project', $label));
         }
-        if (!$task->isRunning()) {
-            throw new InvalidArgumentException(sprintf('The task "%s" is not running', $label));
-        }
 
-        $this->tools()->info('Starting monitor, use <info>Ctrl+C</info> to stop');
+        $this->tools()->info('fetching debug data for <info>%s</info>', $label);
+        $proc = Process::fromShellCommandline(sprintf('mutagen sync list -l %s', $task->getSession()->getId()));
+        $proc->run();
 
-        /*
-         * monitor provides updated output, so stream it straight back out.
-         */
-        passthru('mutagen sync monitor ' . $task->getSession()->getId());
+        $output->writeln($proc->getOutput());
 
         return 0;
     }

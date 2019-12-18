@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Process\Process;
 use SyncIt\Models\Sessions;
+use function sprintf;
 
 /**
  * Class Mutagen
@@ -23,6 +24,8 @@ use SyncIt\Models\Sessions;
  */
 class Mutagen
 {
+
+    const MUTAGEN_MIN_VERSION = '0.10.0';
 
     const DAEMON_START = 'mutagen daemon start';
     const DAEMON_STOP  = 'mutagen daemon stop';
@@ -41,6 +44,8 @@ class Mutagen
 
     public function start(): bool
     {
+        $this->assertSupportedVersion();
+
         exec(static::DAEMON_START);
 
         return $this->isRunning();
@@ -48,16 +53,27 @@ class Mutagen
 
     public function stop(): bool
     {
+        $this->assertSupportedVersion();
+
         if ($this->isRunning()) {
-            exec('mutagen terminate -a');
+            exec('mutagen sync terminate -a');
             exec(static::DAEMON_STOP);
         }
 
         return !$this->isRunning();
     }
 
+    public function assertSupportedVersion(): void
+    {
+        if (!$this->supported()) {
+            throw new RuntimeException(sprintf('Mutagen update required, min supported version is "%s"', self::MUTAGEN_MIN_VERSION));
+        }
+    }
+
     public function assertDaemonIsRunning(InputInterface $input, OutputInterface $output, bool $askToStart = true): void
     {
+        $this->assertSupportedVersion();
+
         if ($this->isRunning()) {
             return;
         }
@@ -86,6 +102,11 @@ class Mutagen
         }
 
         return $this->version;
+    }
+
+    public function supported(): bool
+    {
+        return version_compare($this->getVersion(), self::MUTAGEN_MIN_VERSION, '>=');
     }
 
     public function hasLabels(): bool

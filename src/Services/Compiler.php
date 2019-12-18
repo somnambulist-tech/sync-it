@@ -8,6 +8,8 @@ use Phar;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
+use function shell_exec;
+use function strtr;
 
 /**
  * Compiler
@@ -111,7 +113,17 @@ class Compiler
     {
         $content = file_get_contents($this->basePath() . '/bin/console');
         $content = preg_replace('{^#!/usr/bin/env php\s*}', '', $content);
+
+        $content = strtr($content, [
+            '(\'Sync-It with Mutagen\', \'1.0.0\')' => sprintf('(\'Sync-It with Mutagen\', \'%s\')', $this->getMostRecentTagFromRepository())
+        ]);
+
         $phar->addFromString('bin/console', $content);
+    }
+
+    private function getMostRecentTagFromRepository()
+    {
+        return shell_exec('git describe --abbrev=0 --tags') ?? 'latest';
     }
 
     /**

@@ -11,8 +11,7 @@ SyncIt runs from a config file typically located in your project root named:
 Inside the config file you can define any number of sync tasks. Each task
 should be a unique combination of a source (the alpha) and a target (beta).
 
-Currently SyncIt has been tested against mutagen 0.8.3, 0.9.0, 0.9.1, 0.9.2,
-and 0.10.0.
+SyncIt requires Mutagen >=0.10.0.
 
 There is support for labels including project prefixes.
 
@@ -23,7 +22,7 @@ SyncIt has only been tested on macOS Mojave.
  * simple yaml configuration
  * common options and ignore rules that are shared by tasks
  * all mutagen `create` flags are supported
- * labels (without 0.9.0 beta+)
+ * labels
  * multiple tasks per project file
  * custom file location via a `MUTAGEN_SYNC_IT_CONFIG` env param
  * phar archive
@@ -83,42 +82,8 @@ unlink /usr/local/bin/syncit && rm -v /usr/local/bin/mutagen-sync-it.phar
 ### Protecting Yourself From File Overwrites
 
 By way of some safe-guards you can configure a global mutagen config by adding
-a `.mutagen.toml` or `.mutagen.yml` file to your home folder `cd ~`. This file
-defines global defaults that will be applied to all sessions (see mutagen.io
-for more details)
-
-__Note:__ the TOML format is deprecated from Mutagen 0.10.0. YAML should be used.
-
-```
-[ignore]
-default = [
-    # System files
-    ".DS_Store",
-    "._*",
-
-    # Vim files
-    "*~",
-    "*.sw[a-p]",
-
-    # Common folders and files
-    ".idea",
-]
-# ignore vcs files like .git .svn etc
-vcs = true
-
-[symlink]
-mode = "ignore"
-
-[sync]
-# ensures beta cannot overwrite alpha
-mode = "one-way-replica"
-
-[permissions]
-defaultFileMode=0644
-defaultDirectoryMode=0755
-```
-
-Or in YAML format: 
+a `.mutagen.yml` file to your home folder `cd ~`. This file defines global defaults
+that will be applied to all sessions (see mutagen.io for more details):
 
 ```
 sync:

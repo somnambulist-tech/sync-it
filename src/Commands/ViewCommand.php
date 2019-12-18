@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace SyncIt\Commands;
 
 use InvalidArgumentException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use SyncIt\Commands\Behaviours\ListConfiguredTasks;
 use SyncIt\Commands\Behaviours\RunWrappedProcess;
 use SyncIt\Models\SyncTask;
@@ -51,11 +49,7 @@ class ViewCommand extends BaseCommand
         $label = $input->getArgument('label');
 
         if (!$label) {
-            /** @var QuestionHelper $helper */
-            $helper = $this->getHelper('question');
-            $question = new ChoiceQuestion('View the details of which task? ', $tasks->keys()->toArray());
-
-            $label = $helper->ask($input, $output, $question);
+            $label = $this->tools()->choose('View the details of which task? ', $tasks->keys()->toArray());
         }
 
         $this->getMutagen()->getSessions()->map($tasks);
@@ -84,7 +78,7 @@ class ViewCommand extends BaseCommand
             ->addRow(['<comment>Source (alpha)</comment>', $task->getSource()])
             ->addRow(['<comment>Target (beta)</comment>', $task->getTarget()])
             ->addRow(['<comment>Using Common</comment>', $task->shouldUseCommon() ? 'Yes' : 'No'])
-            ->addRow(['<comment>Running</comment>', $task->isRunning() ? '<info>Yes</info>' : '<fg=blue>No</>'])
+            ->addRow(['<comment>Running</comment>', $task->isRunning() ? '<info>Yes</info>' : '<warn>No</>'])
             ->addRow(['<comment>Session</comment>', $task->getSession() ? $task->getSession()->getId() : '--'])
         ;
         $summary->render();
@@ -113,7 +107,7 @@ class ViewCommand extends BaseCommand
 
         $output->writeln('');
         if ($task->getSession()) {
-            $output->writeln(sprintf('Run: <comment>mutagen list %s -l</comment> for raw data', $task->getSession()->getId()));
+            $output->writeln(sprintf('Run: <comment>debug %s</comment> for debug data', $task->getSession()->getId()));
         }
         $output->writeln('');
 

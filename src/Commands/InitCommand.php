@@ -6,7 +6,6 @@ namespace SyncIt\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use SyncIt\Services\Config\ConfigLocator;
 
 /**
@@ -31,18 +30,9 @@ class InitCommand extends BaseCommand
         $file = getcwd() . DIRECTORY_SEPARATOR . ConfigLocator::FILE_NAME;
 
         if (file_exists($file)) {
-            $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion(
-                '<comment>Warning</comment> a config file already exists, do you wish to <fg=red;options=bold>overwrite</> it? (y/n) ',
-                false
-            );
-
-            if (!$helper->ask($input, $output, $question)) {
-                $question = new ConfirmationQuestion('Would you like to see a sample config? (y/n) ', false);
-
-                if ($helper->ask($input, $output, $question)) {
-
-                    $output->writeln('Outputting <comment>sample</comment> config:');
+            if ('n' === $this->tools()->ask('<comment>Warning</comment> a config file already exists, do you wish to <error>overwrite</> it? (y/n) ', false)) {
+                if ('y' === $this->tools()->ask('Would you like to see a sample config? (y/n) ', false)) {
+                    $this->tools()->info('Outputting <comment>sample</comment> config:');
                     $output->writeln(str_repeat('-', 80));
                     $output->write($this->default());
                 }
@@ -52,9 +42,9 @@ class InitCommand extends BaseCommand
         }
 
         if (false !== $written = file_put_contents($file, $this->default())) {
-            $output->writeln(sprintf('<fg=black;bg=green> OK </> config file <fg=yellow>"%s"</> created successfully', $file));
+            $this->tools()->success('config file <info>%s</> created successfully', $file);
         } else {
-            $output->writeln(sprintf('<error> ERR </error> failed to create config at <fg=yellow>"%s"</>', $file));
+            $this->tools()->error('failed to create config at <info>%s</>', $file);
         }
 
         return 0;

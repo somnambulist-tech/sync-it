@@ -101,24 +101,17 @@ HELP
      */
     private function promptForLabelsToStop(InputInterface $input, OutputInterface $output, Collection $tasks, array $labels)
     {
-        /** @var QuestionHelper $helper */
-        $helper   = $this->getHelper('question');
-        $question = new ChoiceQuestion(
-            'Which task would you like to stop? ',
-            $tasks->keys()->add('All')->add( 'All & Daemon')->toArray()
-        );
-
-        $label = strtolower((string)$helper->ask($input, $output, $question));
+        $label = strtolower((string)$this->tools()->choose('Which task would you like to stop? ', $tasks->keys()->add('All')->add( 'All & Daemon')->toArray()));
 
         if ('all & daemon' === $label) {
-            $output->writeln('Stopping all tasks and the mutagen daemon...');
+            $this->tools()->info('Stopping all tasks and the mutagen daemon...');
             if ($this->getMutagen()->stop()) {
-                $output->writeln('<fg=black;bg=green> STOP </> stopped all sessions and daemon successfully');
+                $this->tools()->success('stopped all sessions and daemon successfully');
 
                 return 0;
             }
 
-            $output->writeln('<fg=white;bg=red> ERR </> failed to stop processes! Check mutagen status');
+            $this->tools()->error('failed to stop processes! Check mutagen status: <info>mutagen sync list</info>');
             return 1;
 
         } elseif ('all' !== $label) {
@@ -135,14 +128,14 @@ HELP
      */
     private function stopSelectedTasks(OutputInterface $output, Collection $tasks, array $labels): void
     {
-        $output->writeln(sprintf('Stopping <info>%s</info> sync tasks', count($labels)));
+        $this->tools()->info('Stopping <info>%s</info> sync tasks', count($labels));
 
         $tasks->only(...$labels)->each(function (SyncTask $task) use ($output) {
             if ($task->isRunning()) {
                 return $this->stopTask($output, $task);
             }
 
-            $output->writeln(sprintf('<fg=white;bg=blue> STOP </> task <fg=yellow>"%s"</> is not running', $task->getLabel()));
+            $this->tools()->info('task <info>%s</info> is not running', $task->getLabel());
 
             return true;
         });
@@ -156,7 +149,7 @@ HELP
      */
     private function stopTask(OutputInterface $output, SyncTask $task): bool
     {
-        $command = new Collection(['mutagen', 'terminate']);
+        $command = new Collection(['mutagen', 'sync', 'terminate']);
 
         if ($this->getMutagen()->hasLabels()) {
             $command->add(sprintf('--label-selector=%s', $task->getLabel()));
@@ -167,13 +160,9 @@ HELP
         $proc = $this->runProcessViaHelper($output, $command);
 
         if ($proc->isSuccessful()) {
-            $output->writeln(
-                sprintf('<fg=black;bg=green> STOP </> stopped session for <fg=yellow>"%s"</> successfully', $task->getLabel())
-            );
+            $this->tools()->success('stopped session for <info>%s</info> successfully', $task->getLabel());
         } else {
-            $output->writeln(
-                sprintf('<error> ERR </error> failed to start session for <fg=yellow>"%s"</>; check options', $task->getLabel())
-            );
+            $this->tools()->error('failed to start session for <info>%s</info>; check options', $task->getLabel());
         }
 
         return true;

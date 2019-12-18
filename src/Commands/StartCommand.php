@@ -80,11 +80,8 @@ HELP
             $labels = $tasks->keys()->toArray();
         }
         if (!count($input->getOption('label'))) {
-            /** @var QuestionHelper $helper */
-            $helper = $this->getHelper('question');
-            $question = new ChoiceQuestion('Which task would you like to start? ', $tasks->keys()->add('All')->toArray());
+            $label = $this->tools()->choose('Which task would you like to start? ', $tasks->keys()->add('All')->toArray());
 
-            $label = $helper->ask($input, $output, $question);
             if ($label !== 'All') {
                 $labels = [$label];
             }
@@ -94,7 +91,7 @@ HELP
 
         $tasks->only(...$labels)->each(function (SyncTask $task) use ($output) {
             if ($task->isRunning()) {
-                $output->writeln(sprintf('<fg=white;bg=blue> RUN </> task <fg=yellow>"%s"</> is already running', $task->getLabel()));
+                $this->tools()->info('task <comment>%s</> is already running', $task->getLabel());
                 return true;
             }
 
@@ -102,13 +99,9 @@ HELP
             $proc    = $this->runProcessViaHelper($output, $command);
 
             if ($proc->isSuccessful()) {
-                $output->writeln(
-                    sprintf('<fg=black;bg=green> RUN </> started session for <fg=yellow>"%s"</> successfully', $task->getLabel())
-                );
+                $this->tools()->success('started session for <info>%s</> successfully', $task->getLabel());
             } else {
-                $output->writeln(
-                    sprintf('<error> ERR </error> failed to start session for <fg=yellow>"%s"</>; check options', $task->getLabel())
-                );
+                $this->tools()->error('failed to start session for <info>%s</>; check options', $task->getLabel());
             }
 
             return true;
@@ -120,7 +113,7 @@ HELP
     private function buildStartCommand(SyncTask $task): Collection
     {
         $command = new Collection([
-            'mutagen', 'create',
+            'mutagen', 'sync', 'create',
             $task->getSource(),
             $task->getTarget(),
         ]);

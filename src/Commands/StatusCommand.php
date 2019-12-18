@@ -68,7 +68,7 @@ class StatusCommand extends BaseCommand
         $table->addRow(new TableSeparator());
         $table->addRow([
             new TableCell(
-                'Run: "<comment>mutagen list</comment>" for raw output; or <comment>view <label></comment> for more details',
+                'Run: <comment>mutagen sync list</comment> for raw output; or <comment>view <label></comment> for more details',
                 ['colspan' => 4]
             )
         ]);
