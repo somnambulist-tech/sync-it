@@ -124,9 +124,9 @@ class Compiler
         $phar->addFromString('bin/console', $content);
     }
 
-    private function getMostRecentTagFromRepository()
+    private function getMostRecentTagFromRepository(): string
     {
-        return shell_exec('git describe --abbrev=0 --tags') ?? 'latest';
+        return trim(shell_exec('git describe --abbrev=0 --tags') ?? 'latest');
     }
 
     /**
