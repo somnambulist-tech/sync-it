@@ -1,6 +1,6 @@
 # Sync-It for Mutagen (Mutagen Sync-It)
 
-[![GitHub Actions release Build Status](https://github.com/dave-redfern/somnambulist-sync-it/workflows/release/badge.svg)](https://github.com/dave-redfern/somnambulist-sync-it/actions?query=workflow%3Arelease)
+[![GitHub Actions release Build Status](https://github.com/somnambulist-tech/sync-it/workflows/release/badge.svg)](https://github.com/somnambulist-tech/sync-it/actions?query=workflow%3Arelease)
 
 SyncIt is a helper (phar archive) to make it easier to work with sessions when
 running [mutagen](https://mutagen.io/).
@@ -37,7 +37,7 @@ Symlink the phar to `syncit` or a.n.other name.
 Or install via brew:
 
 ```bash
-brew install dave-redfern/somnambulist/syncit
+brew install somnambulist-tech/somnambulist/syncit
 ```
 
 In your project root e.g. `~/Projects/my-web-project` run: `syncit init` to
@@ -60,7 +60,7 @@ verify the SHA384 hash and copy the phar to `/usr/local/bin`, then symlink it to
 set up with verbose output.
 
 ```bash
-curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/dave-redfern/somnambulist-sync-it/releases/download/1.0.0-beta3/mutagen-sync-it.phar \
+curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/somnambulist-tech/sync-it/releases/download/1.0.0-beta3/mutagen-sync-it.phar \
   && echo "e18ebaf1d7b2166797c33a5149e82d8cb1e810b7c52823615d717b612c6159c3483983992814acd459cd560bf6c7952d  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
   && mv -v /tmp/mutagen-sync-it.phar /usr/local/bin/mutagen-sync-it.phar \
   && chmod -v 755 /usr/local/bin/mutagen-sync-it.phar \
@@ -312,7 +312,7 @@ file location / name.
 
 ## Issues / Questions
 
-Make an issue on the github repo: https://github.com/dave-redfern/somnambulist-sync-it/issues
+Make an issue on the github repo: https://github.com/somnambulist-tech/sync-it/issues
 
 Pull requests are welcome!
 
