@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../mutagen-sync-it/.idea/mutagen-sync-it.iml" filepath="$PROJECT_DIR$/../mutagen-sync-it/.idea/mutagen-sync-it.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/syncit.iml" filepath="$PROJECT_DIR$/.idea/syncit.iml" />
     </modules>
   </component>
 </project>

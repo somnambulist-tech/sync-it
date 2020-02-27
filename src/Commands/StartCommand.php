@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace SyncIt\Commands;
 
 use Somnambulist\Collection\MutableCollection as Collection;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use SyncIt\Commands\Behaviours\ListConfiguredTasks;
 use SyncIt\Commands\Behaviours\RunWrappedProcess;
 use SyncIt\Models\SyncTask;
@@ -31,6 +30,7 @@ class StartCommand extends BaseCommand
         $this
             ->setName('start')
             ->setDescription('Starts the configured mutagen sync tasks')
+            ->addArgument('label', InputArgument::IS_ARRAY|InputArgument::OPTIONAL, 'The labels to stop or all', [])
             ->addOption('label', 'l', InputOption::VALUE_IS_ARRAY|InputOption::VALUE_OPTIONAL, 'The task label(s) to start (mutagen >0.9.0)')
             ->addOption('list', null, InputOption::VALUE_NONE, 'List available tasks')
             ->setHelp(<<<'HELP'
@@ -39,14 +39,20 @@ projects config file.
 
 To start all tasks run:
 
+  <info>php %command.full_name% all</info>
+
+To be prompted what to start run:
+
   <info>php %command.full_name%</info>
 
 To start individual tasks run:
 
+  <info>php %command.full_name% task</info> or:
   <info>php %command.full_name% --label=task</info>
 
 Start multiple tasks by using multiple --label calls:
 
+  <info>php %command.full_name% task1 task2</info> or:
   <info>php %command.full_name% --label=task1 --label=task2</info>
 
 List the available tasks:
@@ -74,16 +80,16 @@ HELP
 
         $this->getMutagen()->assertDaemonIsRunning($input, $output);
 
-        $tasks = $this->getMutagen()->getSessions()->map($this->getConfig()->getTasks());
+        $tasks  = $this->getMutagen()->getSessions()->map($this->getConfig()->getTasks());
+        $labels = $this->getLabelsFromInput($input, $tasks);
 
-        if (!count($labels = $input->getOption('label'))) {
-            $labels = $tasks->keys()->toArray();
-        }
-        if (!count($input->getOption('label'))) {
+        if (count($labels) < 1) {
             $label = $this->tools()->choose('Which task would you like to start? ', $tasks->keys()->add('All')->toArray());
 
             if ($label !== 'All') {
                 $labels = [$label];
+            } else {
+                $labels = $tasks->keys()->toArray();
             }
         }
 
@@ -108,6 +114,21 @@ HELP
         });
 
         return 0;
+    }
+
+    private function getLabelsFromInput(InputInterface $input, Collection $tasks): array
+    {
+        if (!$labels = $input->getOption('label')) {
+            if (!$labels = $input->getArgument('label')) {
+                return [];
+            }
+        }
+
+        if (isset($labels[0]) && 'all' === trim($labels[0])) {
+            $labels = $tasks->keys()->toArray();
+        }
+
+        return $labels;
     }
 
     private function buildStartCommand(SyncTask $task): Collection

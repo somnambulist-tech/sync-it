@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace SyncIt\Commands;
 
 use InvalidArgumentException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use SyncIt\Commands\Behaviours\ListConfiguredTasks;
 use SyncIt\Commands\Behaviours\RunWrappedProcess;
 use SyncIt\Models\SyncTask;
