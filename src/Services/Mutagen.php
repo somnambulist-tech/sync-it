@@ -27,8 +27,9 @@ class Mutagen
 
     const MUTAGEN_MIN_VERSION = '0.10.0';
 
-    const DAEMON_START = 'mutagen daemon start';
-    const DAEMON_STOP  = 'mutagen daemon stop';
+    const DAEMON_START      = 'mutagen daemon start';
+    const DAEMON_STOP       = 'mutagen daemon stop';
+    const DAEMON_STOP_TASKS = 'mutagen sync terminate -a';
 
     /**
      * @var string
@@ -56,7 +57,7 @@ class Mutagen
         $this->assertSupportedVersion();
 
         if ($this->isRunning()) {
-            exec('mutagen sync terminate -a');
+            exec(static::DAEMON_STOP_TASKS);
             exec(static::DAEMON_STOP);
         }
 
@@ -70,26 +71,24 @@ class Mutagen
         }
     }
 
-    public function assertDaemonIsRunning(InputInterface $input, OutputInterface $output, bool $askToStart = true): void
+    public function assertDaemonIsRunning(InputInterface $input, OutputInterface $output): void
     {
         $this->assertSupportedVersion();
 
         if ($this->isRunning()) {
             return;
         }
-        if ($askToStart) {
-            $question = new Question('Would you like to start the daemon? (y/n) ', false);
 
-            if ('y' === strtolower((string)(new QuestionHelper())->ask($input, $output, $question))) {
-                if ($this->start()) {
-                    return;
-                }
+        $output->write('Mutagen is not running, attempting to start...');
 
-                throw new RuntimeException('Failed to start mutagen, is it available in your path?');
-            }
+        if ($this->start()) {
+            $output->writeln('<info>OK</info>');
+            return;
         }
 
-        throw new RuntimeException(sprintf('The mutagen daemon is not running, run: "%s"', static::DAEMON_START));
+        $output->writeln('<err>Failed</err>');
+
+        throw new RuntimeException('Failed to start mutagen, is it available in your path?');
     }
 
     public function getVersion(): string

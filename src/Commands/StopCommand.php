@@ -122,7 +122,7 @@ HELP
      */
     private function promptForLabelsToStop(InputInterface $input, OutputInterface $output, Collection $tasks, array $labels)
     {
-        $label = strtolower((string)$this->tools()->choose('Which task would you like to stop? ', $tasks->keys()->add('All')->add( 'All & Daemon')->toArray()));
+        $label = strtolower((string)$this->tools()->choose('Which task would you like to stop? ', $tasks->keys()->prepend( 'All & Daemon')->prepend('All')->toArray()));
 
         if ('all & daemon' === $label) {
             $this->tools()->info('Stopping all tasks and the mutagen daemon...');

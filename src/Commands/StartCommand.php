@@ -84,7 +84,7 @@ HELP
         $labels = $this->getLabelsFromInput($input, $tasks);
 
         if (count($labels) < 1) {
-            $label = $this->tools()->choose('Which task would you like to start? ', $tasks->keys()->add('All')->toArray());
+            $label = $this->tools()->choose('Which task would you like to start? ', $tasks->keys()->prepend('All')->toArray());
 
             if ($label !== 'All') {
                 $labels = [$label];
