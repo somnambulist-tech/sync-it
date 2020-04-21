@@ -30,7 +30,7 @@ class StatusCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getMutagen()->assertDaemonIsRunning($input, $output, true);
+        $this->getMutagen()->assertDaemonIsRunning($input, $output);
 
         $tasks = $this->getConfig()->getTasks();
 

@@ -50,7 +50,7 @@ class MutagenSessionParser
     public function sessions(): Sessions
     {
         $sessions = new Collection();
-        $proc     = new Process(['mutagen', 'list']);
+        $proc     = new Process(['mutagen', 'sync', 'list']);
         $proc->run();
 
         if (!$proc->isSuccessful()) {
