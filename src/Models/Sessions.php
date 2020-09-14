@@ -84,7 +84,7 @@ class Sessions implements IteratorAggregate, Countable
 
         if ($session->count() > 1) {
             throw new RuntimeException(
-                sprintf('Task "%s" matched more than one session; use "mutagen list" instead', $task->getLabel())
+                sprintf('Task "%s" matched more than one session; use "mutagen sync list" instead', $task->getLabel())
             );
         }
 

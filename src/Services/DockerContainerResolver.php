@@ -33,7 +33,7 @@ class DockerContainerResolver
      *
      * @link https://docs.docker.com/engine/reference/commandline/ps/#formatting
      */
-    public function containerFromNameFilter(string $name, string $format = 'id'): string
+    public function containerFromNameFilter(string $name, string $format = 'id'): ?string
     {
         $format   = $format == 'name' ? '.Names' : '.ID';
 
@@ -53,7 +53,7 @@ class DockerContainerResolver
             throw new RuntimeException(sprintf('Unable to query docker, exit code was "%s"', $success));
         }
         if (count($containers) == 0) {
-            throw new RuntimeException(sprintf('No containers found matching name "%s"', $name));
+            return null;
         }
         if (count($containers) > 1) {
             throw new RuntimeException(
