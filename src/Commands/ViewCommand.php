@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace SyncIt\Commands;
 
@@ -78,6 +76,7 @@ class ViewCommand extends BaseCommand
             ->addRow(['<comment>Source (alpha)</comment>', $task->getSource()])
             ->addRow(['<comment>Target (beta)</comment>', $task->getTarget()])
             ->addRow(['<comment>Using Common</comment>', $task->shouldUseCommon() ? 'Yes' : 'No'])
+            ->addRow(['<comment>Groups</comment>', $task->getGroups()->implode(', ')])
             ->addRow(['<comment>Running</comment>', $task->isRunning() ? '<info>Yes</info>' : '<warn>No</>'])
             ->addRow(['<comment>Session</comment>', $task->getSession() ? $task->getSession()->getId() : '--'])
         ;

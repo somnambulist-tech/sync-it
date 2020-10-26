@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace SyncIt\Commands;
 
@@ -9,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use SyncIt\Commands\Behaviours\GetLabelsFromInput;
 use SyncIt\Commands\Behaviours\ListConfiguredTasks;
 use SyncIt\Commands\Behaviours\RunWrappedProcess;
 use SyncIt\Models\SyncTask;
@@ -22,6 +21,7 @@ use SyncIt\Models\SyncTask;
 class StartCommand extends BaseCommand
 {
 
+    use GetLabelsFromInput;
     use ListConfiguredTasks;
     use RunWrappedProcess;
 
@@ -30,8 +30,8 @@ class StartCommand extends BaseCommand
         $this
             ->setName('start')
             ->setDescription('Starts the configured mutagen sync tasks')
-            ->addArgument('label', InputArgument::IS_ARRAY|InputArgument::OPTIONAL, 'The labels to stop or all', [])
-            ->addOption('label', 'l', InputOption::VALUE_IS_ARRAY|InputOption::VALUE_OPTIONAL, 'The task label(s) to start (mutagen >0.9.0)')
+            ->addArgument('label', InputArgument::IS_ARRAY|InputArgument::OPTIONAL, 'The labels/group to start or all to start all', [])
+            ->addOption('label', 'l', InputOption::VALUE_IS_ARRAY|InputOption::VALUE_OPTIONAL, 'The task label(s) to start or group name')
             ->addOption('list', null, InputOption::VALUE_NONE, 'List available tasks')
             ->setHelp(<<<'HELP'
 Starts the specified, or all, configured sync tasks as defined in the current
@@ -116,21 +116,6 @@ HELP
         return 0;
     }
 
-    private function getLabelsFromInput(InputInterface $input, Collection $tasks): array
-    {
-        if (!$labels = $input->getOption('label')) {
-            if (!$labels = $input->getArgument('label')) {
-                return [];
-            }
-        }
-
-        if (isset($labels[0]) && 'all' === trim($labels[0])) {
-            $labels = $tasks->keys()->toArray();
-        }
-
-        return $labels;
-    }
-
     private function buildStartCommand(SyncTask $task): Collection
     {
         $command = new Collection([
@@ -138,10 +123,7 @@ HELP
             $task->getSource(),
             $task->getTarget(),
         ]);
-
-        if ($this->getMutagen()->hasLabels()) {
-            $command->add(sprintf('--label="%s"', $task->getLabel()));
-        }
+        $command->add(sprintf('--label="%s"', $task->getLabel()));
 
         $task->getOptions()->each(function ($value, $key) use ($command) {
             if (is_null($value) && in_array($key, ['ignore-vcs', 'no-ignore-vcs'])) {

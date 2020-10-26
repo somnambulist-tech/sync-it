@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace SyncIt\Commands;
 
@@ -44,13 +42,14 @@ class StatusCommand extends BaseCommand
                     $this->getMutagen()->getVersion()
                 )
             )
-            ->setHeaders(['Label', 'Identifier', 'Conn State', 'Sync Status'])
+            ->setHeaders(['Label', 'Groups', 'Identifier', 'Conn State', 'Sync Status'])
         ;
 
         $tasks->each(function (SyncTask $task) use ($table) {
             if ($task->isRunning()) {
                 $table->addRow([
                     $task->getLabel(),
+                    $task->getGroups()->implode(', '),
                     $task->getSession()->getId(),
                     $task->getSession()->getConnectionState(),
                     $task->getSession()->getStatus() ?? '--',
@@ -58,6 +57,7 @@ class StatusCommand extends BaseCommand
             } else {
                 $table->addRow([
                     $task->getLabel(),
+                    $task->getGroups()->implode(', '),
                     '--',
                     '--',
                     '<comment>stopped</comment>',

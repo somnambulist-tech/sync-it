@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace SyncIt\Models;
 
@@ -23,11 +21,6 @@ class Sessions implements IteratorAggregate, Countable
      */
     private $items;
 
-    /**
-     * Constructor.
-     *
-     * @param Collection|MutagenSession[] $items
-     */
     public function __construct(Collection $items)
     {
         $this->items = $items;
@@ -50,10 +43,6 @@ class Sessions implements IteratorAggregate, Countable
 
     /**
      * Maps any available sessions to the appropriate task
-     *
-     * @param Collection $tasks
-     *
-     * @return Collection
      */
     public function map(Collection $tasks): Collection
     {

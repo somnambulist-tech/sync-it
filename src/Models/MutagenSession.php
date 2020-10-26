@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace SyncIt\Models;
 
@@ -40,15 +38,6 @@ class MutagenSession extends AbstractValueObject
      */
     private $status;
 
-    /**
-     * Constructor.
-     *
-     * @param string      $id
-     * @param string      $source
-     * @param string      $target
-     * @param string|null $connectionState
-     * @param string|null $status
-     */
     public function __construct(string $id, string $source, string $target, ?string $connectionState = null, ?string $status = null)
     {
         $this->id              = $id;
@@ -63,41 +52,26 @@ class MutagenSession extends AbstractValueObject
         return (string)$this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getSource(): string
     {
         return $this->source;
     }
 
-    /**
-     * @return string
-     */
     public function getTarget(): string
     {
         return $this->target;
     }
 
-    /**
-     * @return string|null
-     */
     public function getConnectionState(): ?string
     {
         return $this->connectionState;
     }
 
-    /**
-     * @return string|null
-     */
     public function getStatus(): ?string
     {
         return $this->status;

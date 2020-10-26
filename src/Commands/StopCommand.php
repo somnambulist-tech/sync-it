@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace SyncIt\Commands;
 
@@ -9,10 +7,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use SyncIt\Commands\Behaviours\GetLabelsFromInput;
 use SyncIt\Commands\Behaviours\ListConfiguredTasks;
 use SyncIt\Commands\Behaviours\RunWrappedProcess;
 use SyncIt\Models\SyncTask;
-use function trim;
 
 /**
  * Class StopCommand
@@ -23,6 +21,7 @@ use function trim;
 class StopCommand extends BaseCommand
 {
 
+    use GetLabelsFromInput;
     use ListConfiguredTasks;
     use RunWrappedProcess;
 
@@ -32,7 +31,7 @@ class StopCommand extends BaseCommand
             ->setName('stop')
             ->setDescription('Stops all configured mutagen sync tasks')
             ->addArgument('label', InputArgument::OPTIONAL|InputArgument::IS_ARRAY, 'The labels to stop or all', [])
-            ->addOption('label', 'l', InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 'The task label(s) to stop', [])
+            ->addOption('label', 'l', InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 'The task label(s) or group to stop', [])
             ->addOption('list', null, InputOption::VALUE_NONE, 'List available tasks')
             ->setHelp(<<<'HELP'
 Stop a specified, or all, sync tasks as defined in the current projects config
@@ -79,7 +78,7 @@ HELP
             return 0;
         }
 
-        $this->getMutagen()->assertDaemonIsRunning($input, $output, false);
+        $this->getMutagen()->assertDaemonIsRunning($input, $output);
 
         $tasks  = $this->getMutagen()->getSessions()->map($this->getConfig()->getTasks());
         $labels = $this->getLabelsFromInput($input, $tasks);
@@ -97,29 +96,6 @@ HELP
         return 0;
     }
 
-    private function getLabelsFromInput(InputInterface $input, Collection $tasks): array
-    {
-        if (!$labels = $input->getOption('label')) {
-            if (!$labels = $input->getArgument('label')) {
-                return [];
-            }
-        }
-
-        if (isset($labels[0]) && 'all' === trim($labels[0])) {
-            $labels = $tasks->keys()->toArray();
-        }
-
-        return $labels;
-    }
-
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param Collection      $tasks
-     * @param array           $labels
-     *
-     * @return array|int
-     */
     private function promptForLabelsToStop(InputInterface $input, OutputInterface $output, Collection $tasks, array $labels)
     {
         $label = strtolower((string)$this->tools()->choose('Which task would you like to stop? ', $tasks->keys()->prepend( 'All & Daemon')->prepend('All')->toArray()));
@@ -142,11 +118,6 @@ HELP
         return $labels;
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param Collection      $tasks
-     * @param array|string[]  $labels
-     */
     private function stopSelectedTasks(OutputInterface $output, Collection $tasks, array $labels): void
     {
         $this->tools()->info('Stopping <info>%s</info> sync tasks', count($labels));
@@ -162,21 +133,10 @@ HELP
         });
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param SyncTask        $task
-     *
-     * @return bool
-     */
     private function stopTask(OutputInterface $output, SyncTask $task): bool
     {
         $command = new Collection(['mutagen', 'sync', 'terminate']);
-
-        if ($this->getMutagen()->hasLabels()) {
-            $command->add(sprintf('--label-selector=%s', $task->getLabel()));
-        } else {
-            $command->add($task->getSession()->getId());
-        }
+        $command->add(sprintf('--label-selector=%s', $task->getLabel()));
 
         $proc = $this->runProcessViaHelper($output, $command);
 

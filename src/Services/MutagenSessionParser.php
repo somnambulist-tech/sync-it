@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace SyncIt\Services;
 
@@ -44,9 +42,6 @@ use SyncIt\Models\Sessions;
 class MutagenSessionParser
 {
 
-    /**
-     * @return Sessions
-     */
     public function sessions(): Sessions
     {
         $sessions = new Collection();

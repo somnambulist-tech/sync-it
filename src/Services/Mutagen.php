@@ -1,14 +1,10 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace SyncIt\Services;
 
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Process\Process;
 use SyncIt\Models\Sessions;
 use function sprintf;
@@ -106,11 +102,6 @@ class Mutagen
     public function supported(): bool
     {
         return version_compare($this->getVersion(), self::MUTAGEN_MIN_VERSION, '>=');
-    }
-
-    public function hasLabels(): bool
-    {
-        return version_compare($this->getVersion(), '0.9.0', '>=');
     }
 
     public function getSessions(): Sessions

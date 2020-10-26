@@ -43,12 +43,6 @@ class ConsoleHelper
      */
     private $noOutput = false;
 
-    /**
-     * Constructor
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     */
     public function __construct(InputInterface $input, OutputInterface $output)
     {
         $this->input  = $input;

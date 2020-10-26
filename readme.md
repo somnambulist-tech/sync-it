@@ -28,6 +28,7 @@ SyncIt has only been tested on macOS Mojave.
  * phar archive
  * support for .env files (including overrides)
  * docker container resolution from a specified name
+ * groups to start/stop multiple tasks at the same time
 
 ## Setup
 
@@ -48,27 +49,6 @@ __Caution:__ before using mutagen ensure you have read and understood the docs.
 This is provided as-is without warranty of any kind. Use at your own risk!
 
 __Caution:__ mis-configuring a mutagen session can cause serious data-loss!
-
-### Lazy Install
-
-__Caution:__ you use the following at your own risk! No responsibility is taken
-if the script causes bad things to happen. You have been warned.
-
-The following will download the current (at the time of writing) phar archive,
-verify the SHA384 hash and copy the phar to `/usr/local/bin`, then symlink it to
-`syncit` and verify it runs by calling `syncit --version`. The script has been
-set up with verbose output.
-
-```bash
-curl --silent --fail --location --retry 3 --output /tmp/mutagen-sync-it.phar --url https://github.com/somnambulist-tech/sync-it/releases/download/1.0.0-beta3/mutagen-sync-it.phar \
-  && echo "e18ebaf1d7b2166797c33a5149e82d8cb1e810b7c52823615d717b612c6159c3483983992814acd459cd560bf6c7952d  /tmp/mutagen-sync-it.phar" | shasum -a 384 -c \
-  && mv -v /tmp/mutagen-sync-it.phar /usr/local/bin/mutagen-sync-it.phar \
-  && chmod -v 755 /usr/local/bin/mutagen-sync-it.phar \
-  && ln -vf -s /usr/local/bin/mutagen-sync-it.phar /usr/local/bin/syncit \
-  && syncit --ansi --version --no-interaction
-```
-
-If the hash check fails, remove the phar archive.
 
 ### Removing SyncIt
 
@@ -113,6 +93,9 @@ The above ensures that all syncs are created using `one-way-replica`. This
 ensures that no changes are written back to the source but the target will
 be overwritten.
 
+__Note:__ that this will happily override your local in the source is set as a remote
+and the target is a local folder. Be very careful!
+
 ## The Config File
 
 The config file is split into 2 sections:
@@ -144,6 +127,9 @@ mutagen:
         source_files:
             source: "${PROJECT_DIR}"
             target: "docker://container_1/app"
+            groups:
+                - group1
+                - group2
             options:
                 sync-mode: one-way-replica
             ignore:
@@ -213,6 +199,11 @@ This allows the task name to be used consistently regardless of mutagen version.
 
 The target supports different transport mechanisms e.g. docker:// ssh:// etc.
 Be sure to read the format / rules at: https://mutagen.io/documentation/transports/
+
+Multiple group names can be set on each tasks under the `groups:` entry. This 
+will allow start/stop to work with all those tasks tagged with that group name.
+For example: a web app with a JavaScript build pipeline may have many tasks. These
+can now be grouped into app/build making it easier to start/stop in one go. 
 
 #### Docker Containers
 

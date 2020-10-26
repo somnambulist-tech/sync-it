@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace SyncIt\Services\Config;
 
@@ -25,11 +23,6 @@ class ConfigParser
      */
     private $containerResolver;
 
-    /**
-     * Constructor.
-     *
-     * @param DockerContainerResolver $containerResolver
-     */
     public function __construct(DockerContainerResolver $containerResolver)
     {
         $this->containerResolver = $containerResolver;
@@ -77,6 +70,7 @@ class ConfigParser
             $data    = Collection::collect($data);
             $options = $data->value('options', new Collection())->unique();
             $ignore  = $data->value('ignore', new Collection())->unique();
+            $groups  = $data->value('groups', new Collection())->unique();
 
             if ($data->get('use_common', true)) {
                 $options = $common
@@ -99,7 +93,8 @@ class ConfigParser
                     (string)$data->get('target'),
                     (bool)$data->get('use_common', true),
                     $options,
-                    $ignore
+                    $ignore,
+                    $groups
                 )
             );
         }
