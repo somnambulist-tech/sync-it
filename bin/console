@@ -20,6 +20,7 @@ if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader
 }
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -31,14 +32,17 @@ if (file_exists($env)) {
     (new Dotenv())->loadEnv($env);
 }
 
+$formatter = new OutputFormatter(false, [
+    'ok' => new OutputFormatterStyle('white', 'green', ['bold']),
+    'err' => new OutputFormatterStyle('white', 'red', ['bold']),
+    'step' => new OutputFormatterStyle('white', 'blue', ['bold']),
+    'q' => new OutputFormatterStyle('white', 'cyan', ['bold']),
+    'warn' => new OutputFormatterStyle('white', 'yellow', ['bold']),
+    'i' => new OutputFormatterStyle('white', 'magenta', ['bold']),
+]);
+
 $input  = new ArgvInput();
-$output = new ConsoleOutput();
-$output->getFormatter()->setStyle('ok', new OutputFormatterStyle('white', 'green', ['bold']));
-$output->getFormatter()->setStyle('err', new OutputFormatterStyle('white', 'red', ['bold']));
-$output->getFormatter()->setStyle('step', new OutputFormatterStyle('white', 'blue', ['bold']));
-$output->getFormatter()->setStyle('q', new OutputFormatterStyle('white', 'cyan', ['bold']));
-$output->getFormatter()->setStyle('warn', new OutputFormatterStyle('white', 'yellow', ['bold']));
-$output->getFormatter()->setStyle('i', new OutputFormatterStyle('white', 'magenta', ['bold']));
+$output = new ConsoleOutput(ConsoleOutput::VERBOSITY_NORMAL, null, $formatter);
 
 $app = new Application('Sync-It with Mutagen', '1.0.0');
 $commands = [
