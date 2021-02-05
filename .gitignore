@@ -95,3 +95,4 @@ Temporary Items
 .apdisk
 
 /.idea/commandlinetools/Symfony*.xml
+/bin/yaml-lint

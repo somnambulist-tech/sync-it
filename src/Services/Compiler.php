@@ -58,13 +58,14 @@ class Compiler
             ->notName('Compiler.php')
             ->in($basePath . '/src/')
             ->in($basePath . '/vendor/beberlei/')
+            ->in($basePath . '/vendor/brick/')
             ->in($basePath . '/vendor/eloquent/')
-            ->in($basePath . '/vendor/paragonie/')
             ->in($basePath . '/vendor/pragmarx/')
             ->in($basePath . '/vendor/psr/')
             ->in($basePath . '/vendor/ramsey/')
             ->in($basePath . '/vendor/somnambulist/')
             ->in($basePath . '/vendor/symfony/')
+            ->in($basePath . '/vendor/voku/')
             ->sort($finderSort)
         ;
 
@@ -77,10 +78,10 @@ class Compiler
         ];
 
         $this->addFile($phar, new SplFileInfo($basePath . '/vendor/autoload.php'));
-        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_namespaces.php'));
-        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_psr4.php'));
         $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_classmap.php'));
         $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_files.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_namespaces.php'));
+        $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_psr4.php'));
         $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_real.php'));
         $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/autoload_static.php'));
         $this->addFile($phar, new SplFileInfo($basePath . '/vendor/composer/ClassLoader.php'));

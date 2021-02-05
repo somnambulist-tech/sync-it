@@ -4,6 +4,7 @@ on:
   create:
     tags:
       - '*'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,7 +15,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.3'
+          php-version: '7.4'
           extensions: mbstring, intl, posix
           ini-values: memory_limit=256M, max_execution_time=0, phar.readonly=0
           tools: pecl

@@ -10,14 +10,14 @@
         }
     ],
     "require": {
-        "ramsey/uuid": "~3.9",
-        "somnambulist/domain": "^2.5",
-        "symfony/console": "^4.4",
-        "symfony/dotenv": "^4.4",
-        "symfony/finder": "^4.4",
-        "symfony/process": "^4.4",
-        "symfony/var-dumper": "^4.4",
-        "symfony/yaml": "^4.4"
+        "ramsey/uuid": "~4.1",
+        "somnambulist/domain": "^3.2.0",
+        "symfony/console": "^5.2",
+        "symfony/dotenv": "^5.2",
+        "symfony/finder": "^5.2",
+        "symfony/process": "^5.2",
+        "symfony/var-dumper": "^5.2",
+        "symfony/yaml": "^5.2"
     },
     "require-dev": {
     },
