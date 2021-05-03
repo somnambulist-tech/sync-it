@@ -1,6 +1,8 @@
 # Sync-It for Mutagen (Mutagen Sync-It)
 
-[![GitHub Actions release Build Status](https://github.com/somnambulist-tech/sync-it/workflows/release/badge.svg)](https://github.com/somnambulist-tech/sync-it/actions?query=workflow%3Arelease)
+[![GitHub Actions Build Status](https://img.shields.io/github/workflow/status/somnambulist-tech/sync-it/release?logo=github)](https://github.com/somnambulist-tech/sync-it/actions?query=workflow%3Arelease)
+[![Issues](https://img.shields.io/github/issues/somnambulist-tech/sync-it?logo=github)](https://github.com/somnambulist-tech/sync-it/issues)
+[![License](https://img.shields.io/github/license/somnambulist-tech/sync-it?logo=github)](https://github.com/somnambulist-tech/sync-it/blob/master/LICENSE)
 
 SyncIt is a helper (phar archive) to make it easier to work with sessions when
 running [mutagen](https://mutagen.io/).
