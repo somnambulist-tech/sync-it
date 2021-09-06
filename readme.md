@@ -95,7 +95,7 @@ The above ensures that all syncs are created using `one-way-replica`. This
 ensures that no changes are written back to the source but the target will
 be overwritten.
 
-__Note:__ that this will happily override your local in the source is set as a remote
+__Note:__ that this will happily override your local if the source is set as a remote
 and the target is a local folder. Be very careful!
 
 ## The Config File
@@ -205,7 +205,12 @@ Be sure to read the format / rules at: https://mutagen.io/documentation/transpor
 Multiple group names can be set on each tasks under the `groups:` entry. This 
 will allow start/stop to work with all those tasks tagged with that group name.
 For example: a web app with a JavaScript build pipeline may have many tasks. These
-can now be grouped into app/build making it easier to start/stop in one go. 
+can now be grouped into app/build making it easier to start/stop in one go.
+
+SyncIt should work with any of the Mutagen.io transports however please note that
+tasks are not started via an interactive process, therefore you will not be prompted
+for any passwords. If you need to use SSH to sync changes be sure to set up SSH key
+login to avoid the need for passwords.
 
 #### Docker Containers
 
