@@ -2,7 +2,7 @@
 
 namespace SyncIt\Models;
 
-use Somnambulist\Domain\Entities\AbstractValueObject;
+use Somnambulist\Components\Domain\Entities\AbstractValueObject;
 
 /**
  * Class MutagenSession
@@ -12,44 +12,18 @@ use Somnambulist\Domain\Entities\AbstractValueObject;
  */
 class MutagenSession extends AbstractValueObject
 {
-
-    /**
-     * @var string
-     */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $source;
-
-    /**
-     * @var string
-     */
-    private $target;
-
-    /**
-     * @var string|null
-     */
-    private $connectionState;
-
-    /**
-     * @var string|null
-     */
-    private $status;
-
-    public function __construct(string $id, string $source, string $target, ?string $connectionState = null, ?string $status = null)
-    {
-        $this->id              = $id;
-        $this->source          = $source;
-        $this->target          = $target;
-        $this->connectionState = $connectionState;
-        $this->status          = $status;
+    public function __construct(
+        private string $id,
+        private string $source,
+        private string $target,
+        private ?string $connectionState = null,
+        private ?string $status = null
+    ) {
     }
 
     public function toString(): string
     {
-        return (string)$this->id;
+        return $this->id;
     }
 
     public function getId(): string

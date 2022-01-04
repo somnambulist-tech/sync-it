@@ -2,7 +2,7 @@
 
 namespace SyncIt\Models;
 
-use Somnambulist\Collection\MutableCollection as Collection;
+use Somnambulist\Components\Collection\MutableCollection as Collection;
 
 /**
  * Class SyncTask
@@ -12,56 +12,17 @@ use Somnambulist\Collection\MutableCollection as Collection;
  */
 class SyncTask
 {
+    private ?MutagenSession $session = null;
 
-    /**
-     * @var string
-     */
-    private $label;
-
-    /**
-     * @var string
-     */
-    private $source;
-
-    /**
-     * @var string
-     */
-    private $target;
-
-    /**
-     * @var bool
-     */
-    private $useCommon;
-
-    /**
-     * @var Collection
-     */
-    private $options;
-
-    /**
-     * @var Collection
-     */
-    private $ignore;
-
-    /**
-     * @var Collection
-     */
-    private $groups;
-
-    /**
-     * @var MutagenSession|null
-     */
-    private $session;
-
-    public function __construct(string $label, string $source, string $target, bool $useCommon, Collection $options, Collection $ignore, Collection $groups)
-    {
-        $this->label     = $label;
-        $this->source    = $source;
-        $this->target    = $target;
-        $this->useCommon = $useCommon;
-        $this->options   = $options;
-        $this->ignore    = $ignore;
-        $this->groups    = $groups;
+    public function __construct(
+        private string $label,
+        private string $source,
+        private string $target,
+        private bool $useCommon,
+        private Collection $options,
+        private Collection $ignore,
+        private Collection $groups
+    ) {
     }
 
     public function attachSession(MutagenSession $session): void

@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class EnvParametersCommand extends BaseCommand
 {
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('params')
@@ -23,7 +23,7 @@ class EnvParametersCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $params = $this
             ->getConfig()

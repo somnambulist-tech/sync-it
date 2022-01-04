@@ -23,7 +23,7 @@ class MonitorCommand extends BaseCommand
     use ListConfiguredTasks;
     use RunWrappedProcess;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('monitor')
@@ -33,7 +33,7 @@ class MonitorCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('list')) {
             $table = $this->buildTaskTableHelper($output);
@@ -42,7 +42,7 @@ class MonitorCommand extends BaseCommand
             return 0;
         }
 
-        $this->getMutagen()->assertDaemonIsRunning($input, $output, false);
+        $this->getMutagen()->assertDaemonIsRunning($input, $output);
 
         $tasks = $this->getConfig()->getTasks();
         $label = $input->getArgument('label');

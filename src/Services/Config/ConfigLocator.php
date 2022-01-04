@@ -27,7 +27,7 @@ class ConfigLocator
         );
     }
 
-    private function tryLocations()
+    private function tryLocations(): bool|string
     {
         if (getenv(static::ENV_NAME)) {
             return realpath(getenv(static::ENV_NAME));

@@ -17,8 +17,7 @@ use SyncIt\Models\SyncTask;
  */
 trait ListConfiguredTasks
 {
-
-    protected function buildTaskTableHelper(OutputInterface $output)
+    protected function buildTaskTableHelper(OutputInterface $output): Table
     {
         $tasks = $this->getConfig()->getTasks();
 

@@ -24,7 +24,7 @@ class ViewCommand extends BaseCommand
     use ListConfiguredTasks;
     use RunWrappedProcess;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('view')
@@ -34,7 +34,7 @@ class ViewCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('list')) {
             $table = $this->buildTaskTableHelper($output);
@@ -100,7 +100,7 @@ class ViewCommand extends BaseCommand
             ->setHeaders(['Rule'])
             ->setColumnWidth(0, 83)
             ->setColumnMaxWidth(0, 83)
-            ->addRows($task->getIgnore()->map(function ($value, $key) { return [$value];})->toArray())
+            ->addRows($task->getIgnore()->map(function ($value) { return [$value];})->toArray())
         ;
         $ignore->render();
 

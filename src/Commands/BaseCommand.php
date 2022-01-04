@@ -20,30 +20,15 @@ use SyncIt\Services\Mutagen;
  */
 abstract class BaseCommand extends Command
 {
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var Mutagen
-     */
-    private $mutagen;
-
-    /**
-     * @var ConsoleHelper
-     */
-    private $consoleHelper;
+    private ?Config $config = null;
+    private ?Mutagen $mutagen = null;
+    private ?ConsoleHelper $consoleHelper = null;
 
     public function setupConsoleHelper(InputInterface $input, OutputInterface $output): void
     {
         $this->consoleHelper = new ConsoleHelper($input, $output);
     }
 
-    /**
-     * @return Mutagen
-     */
     protected function getMutagen(): Mutagen
     {
         if ($this->mutagen) {
@@ -53,9 +38,6 @@ abstract class BaseCommand extends Command
         return $this->mutagen = new Mutagen();
     }
 
-    /**
-     * @return Config
-     */
     protected function getConfig(): Config
     {
         if ($this->config) {

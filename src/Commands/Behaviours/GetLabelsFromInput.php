@@ -2,7 +2,7 @@
 
 namespace SyncIt\Commands\Behaviours;
 
-use Somnambulist\Collection\MutableCollection as Collection;
+use Somnambulist\Components\Collection\MutableCollection as Collection;
 use Symfony\Component\Console\Input\InputInterface;
 use SyncIt\Models\SyncTask;
 use function count;
@@ -16,7 +16,6 @@ use function trim;
  */
 trait GetLabelsFromInput
 {
-
     private function getLabelsFromInput(InputInterface $input, Collection $tasks): array
     {
         if (!$labels = $input->getOption('label')) {

@@ -15,7 +15,7 @@ use SyncIt\Services\Config\ConfigLocator;
 class InitCommand extends BaseCommand
 {
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('init')
@@ -23,7 +23,7 @@ class InitCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $file = getcwd() . DIRECTORY_SEPARATOR . ConfigLocator::FILE_NAME;
 
@@ -39,7 +39,7 @@ class InitCommand extends BaseCommand
             return 0;
         }
 
-        if (false !== $written = file_put_contents($file, $this->default())) {
+        if (false !== file_put_contents($file, $this->default())) {
             $this->tools()->success('config file <info>%s</> created successfully', $file);
         } else {
             $this->tools()->error('failed to create config at <info>%s</>', $file);
@@ -48,7 +48,7 @@ class InitCommand extends BaseCommand
         return 0;
     }
 
-    private function default()
+    private function default(): string
     {
         $date = date('Y-m-d H:i:s');
 

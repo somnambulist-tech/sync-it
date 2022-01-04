@@ -5,7 +5,8 @@ namespace SyncIt\Models;
 use Countable;
 use IteratorAggregate;
 use RuntimeException;
-use Somnambulist\Collection\MutableCollection as Collection;
+use Somnambulist\Components\Collection\MutableCollection as Collection;
+use Traversable;
 
 /**
  * Class Sessions
@@ -15,23 +16,16 @@ use Somnambulist\Collection\MutableCollection as Collection;
  */
 class Sessions implements IteratorAggregate, Countable
 {
-
-    /**
-     * @var Collection
-     */
-    private $items;
-
-    public function __construct(Collection $items)
+    public function __construct(private Collection $items)
     {
-        $this->items = $items;
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return $this->items;
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->items->count();
     }

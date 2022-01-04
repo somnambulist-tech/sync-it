@@ -22,26 +22,10 @@ use function sprintf;
  */
 class ConsoleHelper
 {
-
-    /**
-     * @var InputInterface
-     */
-    private $input;
-
-    /**
-     * @var OutputInterface
-     */
-    private $output;
-
-    /**
-     * @var HelperSet
-     */
-    private $helperSet;
-
-    /**
-     * @var bool
-     */
-    private $noOutput = false;
+    private InputInterface $input;
+    private OutputInterface $output;
+    private HelperSet $helperSet;
+    private bool $noOutput = false;
 
     public function __construct(InputInterface $input, OutputInterface $output)
     {

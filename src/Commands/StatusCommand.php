@@ -17,8 +17,7 @@ use SyncIt\Models\SyncTask;
  */
 class StatusCommand extends BaseCommand
 {
-
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('status')
@@ -26,7 +25,7 @@ class StatusCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->getMutagen()->assertDaemonIsRunning($input, $output);
 

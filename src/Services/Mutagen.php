@@ -20,17 +20,13 @@ use function sprintf;
  */
 class Mutagen
 {
-
     const MUTAGEN_MIN_VERSION = '0.10.0';
 
     const DAEMON_START      = 'mutagen daemon start';
     const DAEMON_STOP       = 'mutagen daemon stop';
     const DAEMON_STOP_TASKS = 'mutagen sync terminate -a';
 
-    /**
-     * @var string
-     */
-    private $version;
+    private string $version = '';
 
     public function isRunning(): bool
     {

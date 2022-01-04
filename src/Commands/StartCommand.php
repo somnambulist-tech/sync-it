@@ -2,7 +2,7 @@
 
 namespace SyncIt\Commands;
 
-use Somnambulist\Collection\MutableCollection as Collection;
+use Somnambulist\Components\Collection\MutableCollection as Collection;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,12 +20,11 @@ use SyncIt\Models\SyncTask;
  */
 class StartCommand extends BaseCommand
 {
-
     use GetLabelsFromInput;
     use ListConfiguredTasks;
     use RunWrappedProcess;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('start')
@@ -35,7 +34,7 @@ class StartCommand extends BaseCommand
             ->addOption('list', null, InputOption::VALUE_NONE, 'List available tasks')
             ->setHelp(<<<'HELP'
 Starts the specified, or all, configured sync tasks as defined in the current
-projects config file.
+projects' config file.
 
 To start all tasks run:
 
@@ -69,7 +68,7 @@ HELP
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('list')) {
             $table = $this->buildTaskTableHelper($output);

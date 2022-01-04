@@ -2,7 +2,7 @@
 
 namespace SyncIt\Models;
 
-use Somnambulist\Collection\MutableCollection as Collection;
+use Somnambulist\Components\Collection\MutableCollection as Collection;
 
 /**
  * Class Config
@@ -12,27 +12,11 @@ use Somnambulist\Collection\MutableCollection as Collection;
  */
 class Config
 {
-
-    /**
-     * @var Collection
-     */
-    private $common;
-
-    /**
-     * @var Collection|SyncTask[]
-     */
-    private $tasks;
-
-    /**
-     * @var Collection
-     */
-    private $parameters;
-
-    public function __construct(Collection $common, Collection $tasks, Collection $parameters)
-    {
-        $this->common     = $common;
-        $this->tasks      = $tasks;
-        $this->parameters = $parameters;
+    public function __construct(
+        private Collection $common,
+        private Collection $tasks,
+        private Collection $parameters
+    ) {
     }
 
     public function getCommon(): Collection

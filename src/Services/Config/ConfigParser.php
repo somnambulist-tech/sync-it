@@ -3,7 +3,7 @@
 namespace SyncIt\Services\Config;
 
 use Assert\Assert;
-use Somnambulist\Collection\MutableCollection as Collection;
+use Somnambulist\Components\Collection\MutableCollection as Collection;
 use Symfony\Component\Yaml\Yaml;
 use SyncIt\Models\Config;
 use SyncIt\Models\SyncTask;
@@ -17,15 +17,8 @@ use SyncIt\Services\DockerContainerResolver;
  */
 class ConfigParser
 {
-
-    /**
-     * @var DockerContainerResolver
-     */
-    private $containerResolver;
-
-    public function __construct(DockerContainerResolver $containerResolver)
+    public function __construct(private DockerContainerResolver $containerResolver)
     {
-        $this->containerResolver = $containerResolver;
     }
 
     /**

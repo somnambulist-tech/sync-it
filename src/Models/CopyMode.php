@@ -2,7 +2,7 @@
 
 namespace SyncIt\Models;
 
-use Somnambulist\Domain\Entities\AbstractEnumeration;
+use Somnambulist\Components\Domain\Entities\AbstractEnumeration;
 
 /**
  * Class CopyMode
@@ -17,10 +17,8 @@ use Somnambulist\Domain\Entities\AbstractEnumeration;
  */
 final class CopyMode extends AbstractEnumeration
 {
-
     const TWO_WAY_SAFE     = 'two-way-safe';
     const TWO_WAY_RESOLVED = 'two-way-resolved';
     const ONE_WAY_SAFE     = 'one-way-safe';
     const ONE_WAY_REPLICA  = 'one-way-replica';
-
 }

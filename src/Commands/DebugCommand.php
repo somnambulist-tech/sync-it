@@ -20,11 +20,10 @@ use SyncIt\Models\SyncTask;
  */
 class DebugCommand extends BaseCommand
 {
-
     use ListConfiguredTasks;
     use RunWrappedProcess;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('debug')
@@ -34,7 +33,7 @@ class DebugCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('list')) {
             $table = $this->buildTaskTableHelper($output);

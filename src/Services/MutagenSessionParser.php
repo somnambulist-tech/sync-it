@@ -2,7 +2,7 @@
 
 namespace SyncIt\Services;
 
-use Somnambulist\Collection\MutableCollection as Collection;
+use Somnambulist\Components\Collection\MutableCollection as Collection;
 use Symfony\Component\Process\Process;
 use SyncIt\Models\MutagenSession;
 use SyncIt\Models\Sessions;
@@ -62,7 +62,7 @@ class MutagenSessionParser
         }
 
         foreach ($data as $line) {
-            if (false !== strpos($line, '---')) {
+            if (str_contains($line, '---')) {
                 $counter++;
                 continue;
             }

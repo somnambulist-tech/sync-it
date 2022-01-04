@@ -2,7 +2,7 @@
 
 namespace SyncIt\Models;
 
-use Somnambulist\Domain\Entities\AbstractEnumeration;
+use Somnambulist\Components\Domain\Entities\AbstractEnumeration;
 
 /**
  * Class SymlinkMode
@@ -16,9 +16,7 @@ use Somnambulist\Domain\Entities\AbstractEnumeration;
  */
 final class SymlinkMode extends AbstractEnumeration
 {
-
     const IGNORE    = 'ignore';
     const PORTABLE  = 'portable';
     const POSIX_RAW = 'posix-raw';
-
 }

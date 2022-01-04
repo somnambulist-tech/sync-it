@@ -18,7 +18,6 @@ use function strtr;
  */
 class Compiler
 {
-
     private function basePath(): string
     {
         return __DIR__ . '/../..';
@@ -31,7 +30,7 @@ class Compiler
      *
      * @throws RuntimeException
      */
-    public function compile($pharFile = 'mutagen-sync-it.phar')
+    public function compile(string $pharFile = 'mutagen-sync-it.phar'): void
     {
         if (file_exists($pharFile)) {
             unlink($pharFile);
@@ -105,15 +104,15 @@ class Compiler
         chmod($pharFile, 0755);
     }
 
-    private function addFile(Phar $phar, SplFileInfo $file, $strip = true): void
+    private function addFile(Phar $phar, SplFileInfo $file): void
     {
-        $path = strtr(str_replace(realpath($this->basePath()), '', $file->getRealPath()), '\\', '/');
-
+        $path    = strtr(str_replace(realpath($this->basePath()), '', $file->getRealPath()), '\\', '/');
         $content = file_get_contents($file->getRealPath());
-        if ($strip) {
-            $content = $this->stripWhitespace($content);
-        } elseif ('LICENSE' === basename($file)) {
+
+        if ('LICENSE' === $file->getBasename()) {
             $content = "\n" . $content . "\n";
+        } else {
+            $content = $this->stripWhitespace($content);
         }
 
         $phar->addFromString($path, $content);
@@ -143,7 +142,7 @@ class Compiler
      *
      * @return string The PHP string with the whitespace removed
      */
-    private function stripWhitespace(string $source)
+    private function stripWhitespace(string $source): string
     {
         if (!function_exists('token_get_all')) {
             return $source;

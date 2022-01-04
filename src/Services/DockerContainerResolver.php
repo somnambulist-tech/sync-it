@@ -26,7 +26,7 @@ class DockerContainerResolver
      * @param string $name
      * @param string $format Either id or name, default id
      *
-     * @return string
+     * @return string|null
      * @throws RuntimeException
      *
      * @link https://docs.docker.com/engine/reference/commandline/ps/#formatting

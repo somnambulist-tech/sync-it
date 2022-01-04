@@ -2,7 +2,7 @@
 
 namespace SyncIt\Commands;
 
-use Somnambulist\Collection\MutableCollection as Collection;
+use Somnambulist\Components\Collection\MutableCollection as Collection;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,12 +20,11 @@ use SyncIt\Models\SyncTask;
  */
 class StopCommand extends BaseCommand
 {
-
     use GetLabelsFromInput;
     use ListConfiguredTasks;
     use RunWrappedProcess;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('stop')
@@ -34,8 +33,7 @@ class StopCommand extends BaseCommand
             ->addOption('label', 'l', InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 'The task label(s) or group to stop', [])
             ->addOption('list', null, InputOption::VALUE_NONE, 'List available tasks')
             ->setHelp(<<<'HELP'
-Stop a specified, or all, sync tasks as defined in the current projects config
-file.
+Stop a specified, or all, sync tasks as defined in the current projects' config file.
 
 To stop all tasks run:
 
@@ -69,7 +67,7 @@ HELP
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('list')) {
             $table = $this->buildTaskTableHelper($output);
@@ -96,7 +94,7 @@ HELP
         return 0;
     }
 
-    private function promptForLabelsToStop(InputInterface $input, OutputInterface $output, Collection $tasks, array $labels)
+    private function promptForLabelsToStop(InputInterface $input, OutputInterface $output, Collection $tasks, array $labels): int|array
     {
         $label = strtolower((string)$this->tools()->choose('Which task would you like to stop? ', $tasks->keys()->prepend( 'All & Daemon')->prepend('All')->toArray()));
 
