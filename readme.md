@@ -1,6 +1,6 @@
 # Sync-It for Mutagen (Mutagen Sync-It)
 
-[![GitHub Actions Build Status](https://img.shields.io/github/workflow/status/somnambulist-tech/sync-it/release?logo=github)](https://github.com/somnambulist-tech/sync-it/actions?query=workflow%3Arelease)
+[![GitHub Actions Build Status](https://img.shields.io/github/actions/workflow/status/somnambulist-tech/sync-it/release.yml?logo=github&branch=master)](https://github.com/somnambulist-tech/sync-it/actions?query=workflow%3Arelease)
 [![Issues](https://img.shields.io/github/issues/somnambulist-tech/sync-it?logo=github)](https://github.com/somnambulist-tech/sync-it/issues)
 [![License](https://img.shields.io/github/license/somnambulist-tech/sync-it?logo=github)](https://github.com/somnambulist-tech/sync-it/blob/master/LICENSE)
 
@@ -63,7 +63,7 @@ unlink /usr/local/bin/syncit && rm -v /usr/local/bin/mutagen-sync-it.phar
 
 ### Protecting Yourself From File Overwrites
 
-By way of some safe-guards you can configure a global mutagen config by adding
+By way of some safeguards you can configure a global mutagen config by adding
 a `.mutagen.yml` file to your home folder `cd ~`. This file defines global defaults
 that will be applied to all sessions (see mutagen.io for more details):
 
@@ -164,7 +164,7 @@ is intended for local dev usage only.
 
 The common area (not to be confused with `global` from the .mutagen.toml
 file); allows settings to be shared in the current project. Here you can
-add safe guards if you share this with other people e.g.: one-way-replica
+add safeguards if you share this with other people e.g.: one-way-replica
 file permissions etc.
 
 Options are the mutagen create flag names with the leading `--`. For flags
@@ -305,12 +305,12 @@ To build the phar archive, first checkout / clone the sync-it project, run
 php.ini.
 
 You can then run: `bin/compile` which will create a `mutagen-sync-it.phar` file
-in the project root. The compile will output the SHA384 hash together with the
+in the project root. The compilation will output the SHA384 hash together with the
 file location / name.
 
 ## Issues / Questions
 
-Make an issue on the github repo: https://github.com/somnambulist-tech/sync-it/issues
+Make an issue on the GitHub repo: https://github.com/somnambulist-tech/sync-it/issues
 
 Pull requests are welcome!
 
