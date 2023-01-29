@@ -2,7 +2,7 @@
 
 namespace SyncIt\Models;
 
-use Somnambulist\Components\Domain\Entities\AbstractEnumeration;
+use Somnambulist\Components\Models\AbstractEnumeration;
 
 /**
  * Class CopyMode

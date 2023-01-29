@@ -2,7 +2,7 @@
 
 namespace SyncIt\Models;
 
-use Somnambulist\Components\Domain\Entities\AbstractValueObject;
+use Somnambulist\Components\Models\AbstractValueObject;
 
 /**
  * Class MutagenSession
